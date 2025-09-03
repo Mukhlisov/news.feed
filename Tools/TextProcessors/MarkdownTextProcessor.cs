@@ -1,9 +1,11 @@
-﻿namespace Tools.TextProcessors;
+﻿using Tools.MarkdownTextExtensions;
 
-public class MarkdownTextProcessor :  ITextProcessor
+namespace Tools.TextProcessors;
+
+public class MarkdownTextProcessor : ITextProcessor
 {
-    public string ProcessText(string input)
-    {
-        throw new NotImplementedException();
-    }
+    public string ProcessText(string markdown) =>
+        markdown.GetParagraphs()
+            .Select(paragraph => paragraph.ToHtml())
+            .CombineHtmlCode();
 }
