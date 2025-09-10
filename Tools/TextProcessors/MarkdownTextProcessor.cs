@@ -7,5 +7,5 @@ public class MarkdownTextProcessor : ITextProcessor
     public string ProcessText(string markdown) =>
         markdown.GetParagraphs()
             .Select(paragraph => paragraph.ToHtml())
-            .CombineHtmlCode();
+            .ConcatHtmlCode();
 }
