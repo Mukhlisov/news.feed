@@ -6,4 +6,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Config\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\news.feed.models\news.feed.models.csproj" />
+    </ItemGroup>
+
 </Project>

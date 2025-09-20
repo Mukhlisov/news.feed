@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Tools\Tools.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{55B0B498-718E-427E-B198-552095AA20FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "news.feed.models", "news.feed.models\news.feed.models.csproj", "{37074F57-6A2B-4C30-A2ED-43B3559B19D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{55B0B498-718E-427E-B198-552095AA20FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55B0B498-718E-427E-B198-552095AA20FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55B0B498-718E-427E-B198-552095AA20FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37074F57-6A2B-4C30-A2ED-43B3559B19D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37074F57-6A2B-4C30-A2ED-43B3559B19D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37074F57-6A2B-4C30-A2ED-43B3559B19D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37074F57-6A2B-4C30-A2ED-43B3559B19D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
