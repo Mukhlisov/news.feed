@@ -30,7 +30,7 @@ public class SplittingTextIntoParagraphsTests
     [TestCaseSource(nameof(TextWithParagraphs_TestCases))]
     public void CheckNormalSplitting(string markdown, string[] expectedResult)
     {
-        var result = markdown.GetParagraphs();
-        Assert.That(result, Is.EqualTo(expectedResult), "Полученные параграфы не совпадают с ожидаемым результатом");
+        var html = markdown.GetParagraphs();
+        Assert.That(html, Is.EqualTo(expectedResult));
     }
 }
