@@ -17,9 +17,10 @@ public class NewsService(
     {
         var saveAttachmentsTask = _attachmentService.SaveAttachments(makeNewsDto.Attachments).ConfigureAwait(false);
 
+        //TODO: сделать Guid CreatorId.
         var newsToSave = NewsToSaveFactory.Create(makeNewsDto, Guid.Empty);
         var newsId = await _newsRepository.SaveNews(newsToSave).ConfigureAwait(false);
         var attachments = await saveAttachmentsTask;
-        await _attachmentRepository.SaveAttachments(attachments).ConfigureAwait(false);
+        await _attachmentRepository.SaveAttachments(attachments, newsId).ConfigureAwait(false);
     }
 }
