@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\news.feed.models\news.feed.models.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -2,9 +2,9 @@
 
 namespace Tools.TextProcessors;
 
-public class MarkdownTextProcessor : ITextProcessor
+public static class MarkdownTextProcessor
 {
-    public string ProcessText(string markdown) =>
+    public static string ProcessText(string markdown) =>
         markdown.GetParagraphs()
             .Select(paragraph => paragraph.ToHtml())
             .ConcatHtmlCode();
