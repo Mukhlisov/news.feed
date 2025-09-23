@@ -1,5 +1,5 @@
 using news.feed.Attachments;
-using news.feed.models;
+using news.feed.models.Dto;
 using Tools;
 
 namespace news.feed.News;
@@ -15,12 +15,10 @@ public class NewsService(
 
     public async Task SaveNews(MakeNewsDto makeNewsDto)
     {
-        var saveAttachmentsTask = _attachmentService.SaveAttachments(makeNewsDto.Attachments).ConfigureAwait(false);
-
         //TODO: сделать Guid CreatorId.
         var newsToSave = NewsToSaveFactory.Create(makeNewsDto, Guid.Empty);
         var newsId = await _newsRepository.SaveNews(newsToSave).ConfigureAwait(false);
-        var attachments = await saveAttachmentsTask;
+        var attachments = await _attachmentService.SaveAttachments(makeNewsDto.Attachments).ConfigureAwait(false);
         await _attachmentRepository.SaveAttachments(attachments, newsId).ConfigureAwait(false);
     }
 }

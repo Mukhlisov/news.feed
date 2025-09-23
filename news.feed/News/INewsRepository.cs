@@ -1,4 +1,4 @@
-using news.feed.models;
+using news.feed.models.Dto;
 
 namespace news.feed.News;
 

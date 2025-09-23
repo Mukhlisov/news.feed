@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using news.feed.models;
+using news.feed.models.Dto;
 using news.feed.News;
 
 namespace news.feed.Controllers;
@@ -18,9 +18,9 @@ public class NewsController(
     }
 
     [HttpPost("create")]
-    public async void MakeNews([FromBody] MakeNewsDto makeNewsDto)
+    public async void CreateNews([FromBody] MakeNewsDto makeNewsDto)
     {
-        // Validate some fields (Program, Attachments (file size))
+        // Validate some fields (Program, Attachments (file, size))
         await _newsService.SaveNews(makeNewsDto).ConfigureAwait(false);
     }
 }

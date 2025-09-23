@@ -1,4 +1,4 @@
-namespace news.feed.models;
+namespace news.feed.models.Dto;
 
 public class NewsToSave
 {
