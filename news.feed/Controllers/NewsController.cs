@@ -14,7 +14,7 @@ public class NewsController(
     [HttpGet]
     public object GetNews(int skip, int take)
     {
-        return NotFound("No such page");
+        return NotFound("");
     }
 
     [HttpPost("create")]

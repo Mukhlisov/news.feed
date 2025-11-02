@@ -17,10 +17,7 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.9" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.9" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Config\DI\" />
+      <PackageReference Include="MySql.EntityFrameworkCore" Version="9.0.6" />
     </ItemGroup>
 
 </Project>
