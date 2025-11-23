@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using news.feed.models.Dto;
-using news.feed.News;
+using news.feed.Services;
 
 namespace news.feed.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class NewsController(
-    INewsService newsService) : ControllerBase
+    INewsService newsService) : NewsApiControllerBase
 {
     private readonly INewsService _newsService = newsService;
 
@@ -17,10 +17,31 @@ public class NewsController(
         return NotFound("");
     }
 
-    [HttpPost("create")]
-    public async void CreateNews([FromBody] MakeNewsDto makeNewsDto)
+    [HttpGet("program/{program}")]
+    public ActionResult<string> GetNewsFromSpecifiedProgram(string program, [FromQuery(Name = "skip")] int skip, [FromQuery(Name = "take")] int take)
     {
-        // Validate some fields (Program, Attachments (file, size))
-        await _newsService.SaveNews(makeNewsDto).ConfigureAwait(false);
+        try
+        {
+            var json = _newsService.GetBatchNewsFromSpecifiedProgram(program, skip, take);
+            return Ok(json);
+        }
+        catch (Exception ex)
+        {
+            return HandleHttpError(ex);
+        }
+    }
+
+    [HttpPost("save")]
+    public async Task<ActionResult> CreateNews([FromBody] SaveNewsDto saveNewsDto)
+    {
+        try
+        {
+            await _newsService.SaveNews(saveNewsDto).ConfigureAwait(false);
+            return Created("", null); // может потом возвращать url на новость с сайта
+        }
+        catch (Exception ex)
+        {
+            return HandleHttpError(ex);
+        }
     }
 }

@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using news.feed.Config.DI;
+using news.feed.Config.EntityFramework;
+using news.feed.Config.Settings;
 
 namespace news.feed;
 
@@ -7,13 +10,24 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
         builder.Services.ConfigureServiceCollection();
         var app = builder.Build();
 
         app.UseHttpsRedirection();
         app.MapControllers();
 
+        InitDbIfNotExists(app);
+        
         app.Run();
+    }
+
+    private static void InitDbIfNotExists(WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<NewsFeedContext>();
+        db.Database.Migrate();
+        if (db.Programs.Any())
+            return;
+        db.Programs.AddRange(AppSettings.DataBase.DefaultPrograms);
     }
 }

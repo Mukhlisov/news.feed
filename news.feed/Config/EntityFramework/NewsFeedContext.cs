@@ -9,26 +9,60 @@ public class NewsFeedContext : DbContext
     {
     }
 
+    private const int ProgramAliasLength = 25;
     public DbSet<models.Models.News> News { get; set; }
-    public DbSet<Attachment> Attachments { get; set; }
+    public DbSet<NewsBody> NewsBodies { get; set; }
+    public DbSet<models.Models.Program> Programs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<models.Models.News>(entity =>
         {
-            entity.ToTable("News");
-            entity.Property(news => news.AuthorId).IsRequired();
-            entity.Property(news => news.Title).IsRequired();
-            entity.Property(news => news.Body).IsRequired();
-            entity.Property(news => news.Program).IsRequired();
+            entity.ToTable("news");
+            entity.HasKey(news => news.Id);
+            entity.Property(news => news.Id)
+                .ValueGeneratedOnAdd();
+            entity.Property(news => news.AuthorId)
+                .IsRequired();
+            entity.Property(news => news.Title)
+                .HasMaxLength(150)
+                .IsRequired();
+            entity.Property(news => news.BodyId)
+                .IsRequired();
+            entity.Property(news => news.Program)
+                .HasMaxLength(ProgramAliasLength)
+                .IsRequired();
+            entity.Property(news => news.CreationTime)
+                .IsRequired();
+            entity.Property(news => news.UpdateTime)
+                .IsRequired();
         });
-        modelBuilder.Entity<Attachment>(entity =>
+        modelBuilder.Entity<NewsBody>(entity =>
         {
-            entity.ToTable("Attachments");
-            entity.Property(attachment => attachment.ContentLink).IsRequired();
-            entity.Property(attachment => attachment.ContentType).IsRequired();
-            entity.HasOne(attachment => attachment.News).WithMany(news => news.Attachments);
+            entity.ToTable("news_body");
+            entity.HasKey(newsBody => newsBody.Id);
+            entity.Property(newsBody => newsBody.Id)
+                .ValueGeneratedOnAdd();
+            entity.Property(newsBody => newsBody.Body)
+                .IsRequired();
+        });
+        modelBuilder.Entity<models.Models.Program>(entity =>
+        {
+            entity.ToTable("news_program");
+            entity.HasKey(program => program.Alias);
+            entity.Property(program => program.Alias)
+                .HasMaxLength(ProgramAliasLength)
+                .IsRequired();
+            entity.HasIndex(program => program.Alias)
+                .IsUnique();
+            entity.Property(program => program.Name)
+                .HasMaxLength(120)
+                .IsRequired();
+            entity.HasMany(program => program.News)
+                .WithOne()
+                .HasForeignKey(news => news.Program)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
