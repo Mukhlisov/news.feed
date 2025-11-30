@@ -37,7 +37,7 @@ public class NewsController(
         try
         {
             await _newsService.SaveNews(saveNewsDto).ConfigureAwait(false);
-            return Created("", null); // может потом возвращать url на новость с сайта
+            return Created("", null); // (mukhlisov) может потом возвращать url на новость с сайта
         }
         catch (Exception ex)
         {
