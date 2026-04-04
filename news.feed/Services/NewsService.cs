@@ -7,12 +7,17 @@ using Tools.Json;
 
 namespace news.feed.Services;
 
-public class NewsService(
-    INewsRepository newsRepository,
-    ProgramValidator programValidator) : INewsService
+public class NewsService : INewsService
 {
-    private readonly INewsRepository _newsRepository = newsRepository;
-    private readonly ProgramValidator _programValidator = programValidator;
+    private readonly INewsRepository _newsRepository;
+    private readonly ProgramValidator _programValidator;
+
+    public NewsService(INewsRepository newsRepository,
+        ProgramValidator programValidator)
+    {
+        _newsRepository = newsRepository;
+        _programValidator = programValidator;
+    }
 
     public async Task SaveNews(SaveNewsDto saveNewsDto)
     {

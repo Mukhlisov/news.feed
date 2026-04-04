@@ -11,7 +11,7 @@ public class AppSettings
         {
             new Program { Alias = "patronage", Name = "Проект «Патронаж»" },
             new Program { Alias = "baby-walk", Name = "Движение BabyWalk Удмуртия" },
-            new Program {Alias = "education", Name = "Просвятительская деятельность в области реабилитации" },
+            new Program { Alias = "education", Name = "Просветительская деятельность в области реабилитации" },
         };
     }
 }

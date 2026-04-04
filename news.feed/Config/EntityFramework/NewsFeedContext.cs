@@ -10,14 +10,14 @@ public class NewsFeedContext : DbContext
     }
 
     private const int ProgramAliasLength = 25;
-    public DbSet<models.Models.News> News { get; set; }
+    public DbSet<News> News { get; set; }
     public DbSet<NewsBody> NewsBodies { get; set; }
     public DbSet<models.Models.Program> Programs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<models.Models.News>(entity =>
+        modelBuilder.Entity<News>(entity =>
         {
             entity.ToTable("news");
             entity.HasKey(news => news.Id);

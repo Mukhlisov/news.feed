@@ -3,9 +3,9 @@ namespace news.feed.Config.Settings;
 public class TestSettingsStorage
 {
     private static readonly Lazy<TestSettingsStorage> instance = new(() => new TestSettingsStorage());
-    private string? _dbUser;
-    private string? _dbPassword;
-    private string? _dbHost;
+    private readonly string? _dbUser;
+    private readonly string? _dbPassword;
+    private readonly string? _dbHost;
 
     public static TestSettingsStorage Instance => instance.Value;
     public string ConnectionString => $"server={_dbHost};database=news-feed;user={_dbUser};password={_dbPassword}";

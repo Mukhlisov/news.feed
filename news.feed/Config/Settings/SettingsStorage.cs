@@ -20,7 +20,8 @@ public class SettingsStorage
         _dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
         _dbHost = Environment.GetEnvironmentVariable("DB_HOST");
 
-        if (string.IsNullOrEmpty(_dbUser) || string.IsNullOrEmpty(_dbPassword))
-            throw new NullReferenceException("Secrets were not found");
+        ArgumentNullException.ThrowIfNull(_dbUser);
+        ArgumentNullException.ThrowIfNull(_dbPassword);
+        ArgumentNullException.ThrowIfNull(_dbHost);
     }
 }

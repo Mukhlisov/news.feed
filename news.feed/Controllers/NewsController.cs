@@ -6,10 +6,14 @@ namespace news.feed.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class NewsController(
-    INewsService newsService) : NewsApiControllerBase
+public class NewsController : NewsApiControllerBase
 {
-    private readonly INewsService _newsService = newsService;
+    private readonly INewsService _newsService;
+
+    public NewsController(INewsService newsService)
+    {
+        _newsService = newsService;
+    }
 
     [HttpGet]
     public object GetNews(int skip, int take)

@@ -5,10 +5,14 @@ using news.feed.models.Models;
 
 namespace news.feed.Repository;
 
-public class NewsRepository(
-    NewsFeedContext newsFeedContext) : INewsRepository
+public class NewsRepository : INewsRepository
 {
-    private readonly NewsFeedContext _newsFeedContext = newsFeedContext;
+    private readonly NewsFeedContext _newsFeedContext;
+
+    public NewsRepository(NewsFeedContext newsFeedContext)
+    {
+        _newsFeedContext = newsFeedContext;
+    }
 
     public async Task<Guid> SaveNews(NewsToSave newsToSave)
     {
