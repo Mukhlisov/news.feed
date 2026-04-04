@@ -10,8 +10,4 @@
       <ProjectReference Include="..\news.feed.models\news.feed.models.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    </ItemGroup>
-
 </Project>

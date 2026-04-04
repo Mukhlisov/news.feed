@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using news.feed.Config.Settings;
 using news.feed.models.Dto;
+using news.feed.models.Models;
 using news.feed.Repository;
 using Tools;
-using Tools.Json;
 
 namespace news.feed.Services;
 
@@ -30,10 +30,8 @@ public class NewsService : INewsService
             .ConfigureAwait(false);
     }
 
-    public string GetBatchNewsFromSpecifiedProgram(string program, int skip = 0, int take = 0)
+    public IEnumerable<News> GetBatchNewsFromSpecifiedProgram(string program, int skip = 0, int take = 0)
     {
-        var news = _newsRepository.BatchGetNewsFromSpecifiedProgram(program,  skip, take);
-        var json = DefaultJsonSerializer.Serialize(news);
-        return json;
+        return _newsRepository.BatchGetNewsFromSpecifiedProgram(program,  skip, take);
     }
 }

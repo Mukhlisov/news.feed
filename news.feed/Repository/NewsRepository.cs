@@ -41,18 +41,14 @@ public class NewsRepository : INewsRepository
         }
     }
 
-    public IEnumerable<GetNewsDto> BatchGetNews(int skip = 0, int take = 5) =>
+    public IEnumerable<News> BatchGetNews(int skip = 0, int take = 5) =>
         _newsFeedContext.News
             .Skip(skip)
-            .Take(take)
-            .Select(news =>
-                new GetNewsDto(news.Id, news.Title, news.Program, news.BodyId, news.CreationTime, news.UpdateTime));
+            .Take(take);
 
-    public IEnumerable<GetNewsDto> BatchGetNewsFromSpecifiedProgram(string program, int skip = 0, int take = 5) =>
+    public IEnumerable<News> BatchGetNewsFromSpecifiedProgram(string program, int skip = 0, int take = 5) =>
         _newsFeedContext.News
             .Skip(skip)
             .Take(take)
-            .Where(news => news.Program.Equals(program))
-            .Select(news =>
-                new GetNewsDto(news.Id, news.Title, news.Program, news.BodyId, news.CreationTime, news.UpdateTime));
+            .Where(news => news.Program.Equals(program));
 }

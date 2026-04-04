@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using news.feed.models.Dto;
+using news.feed.models.Models;
 using news.feed.Services;
 
 namespace news.feed.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class NewsController : NewsApiControllerBase
+public class NewsController : ApiControllerBase
 {
     private readonly INewsService _newsService;
 
@@ -22,12 +23,15 @@ public class NewsController : NewsApiControllerBase
     }
 
     [HttpGet("program/{program}")]
-    public ActionResult<string> GetNewsFromSpecifiedProgram(string program, [FromQuery(Name = "skip")] int skip, [FromQuery(Name = "take")] int take)
+    public ActionResult<IEnumerable<News>> GetNewsFromSpecifiedProgram(
+        string program, 
+        [FromQuery(Name = "skip")] int skip, 
+        [FromQuery(Name = "take")] int take)
     {
         try
         {
-            var json = _newsService.GetBatchNewsFromSpecifiedProgram(program, skip, take);
-            return Ok(json);
+            var news = _newsService.GetBatchNewsFromSpecifiedProgram(program, skip, take);
+            return Ok(news);
         }
         catch (Exception ex)
         {
