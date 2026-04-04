@@ -1,15 +1,13 @@
-namespace news.feed.Config.Settings;
+namespace news.feed.Config.Settings.DbSettings;
 
-public class SettingsStorage
+public class MySqlSettingsStorage : IDbSettings
 {
-    private static readonly Lazy<SettingsStorage> instance = new(() => new SettingsStorage());
     private string? _dbUser;
     private string? _dbPassword;
     private string? _dbHost;
 
-    public static SettingsStorage Instance => instance.Value;
     public string ConnectionString => $"server={_dbHost};database=news-feed;user={_dbUser};password={_dbPassword}";
-    private SettingsStorage()
+    private MySqlSettingsStorage()
     {
         ReadSecrets();
     }
