@@ -19,6 +19,7 @@ public static class ConfigureServices
     {
         services.AddScoped<INewsService, NewsService>();
         services.AddScoped<INewsRepository, NewsRepository>();
+        services.AddScoped<ProgramValidator>();
     }
 
     private static void ConfigureDbSettings(this IServiceCollection services)
