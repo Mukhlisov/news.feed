@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using news.feed.Config.Settings;
 using news.feed.models.Dto;
+using news.feed.models.Exceptions;
 using news.feed.models.Models;
 using news.feed.Repository;
 using Tools;
@@ -23,7 +23,7 @@ public class NewsService : INewsService
     {
         var isValid = await _programValidator.CheckProgramIsValid(saveNewsDto.Program).ConfigureAwait(false);
         if (!isValid)
-            throw new ValidationException($"Program: {saveNewsDto.Program} doesn't exist");
+            throw new ValidationFailedException($"Program: {saveNewsDto.Program} doesn't exist");
 
         _ = await _newsRepository
             .SaveNews(NewsToSaveFactory.Create(saveNewsDto, AppSettings.DataBase.MainAuthorId))

@@ -10,10 +10,12 @@ namespace news.feed.Controllers;
 public class NewsController : ApiControllerBase
 {
     private readonly INewsService _newsService;
+    private readonly ILogger<NewsController> _logger;
 
-    public NewsController(INewsService newsService)
+    public NewsController(INewsService newsService,  ILogger<NewsController> logger)
     {
         _newsService = newsService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -39,7 +41,7 @@ public class NewsController : ApiControllerBase
         }
     }
 
-    [HttpPost("save")]
+    [HttpPost("create")]
     public async Task<ActionResult> CreateNews([FromBody] SaveNewsDto saveNewsDto)
     {
         try
@@ -49,6 +51,7 @@ public class NewsController : ApiControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, ex.Message);
             return HandleHttpError(ex);
         }
     }

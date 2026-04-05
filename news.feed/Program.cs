@@ -10,9 +10,8 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Services.ConfigureServiceCollection();
+        ConfigureBuilder(builder);
         var app = builder.Build();
-
         app.UseHttpsRedirection();
         app.MapControllers();
 
@@ -24,10 +23,17 @@ public class Program
     private static void InitDbIfNotExists(WebApplication app)
     {
         using var scope = app.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<NewsFeedContext>();
+        using var db = scope.ServiceProvider.GetRequiredService<NewsFeedContext>();
         db.Database.Migrate();
         if (db.Programs.Any())
             return;
         db.Programs.AddRange(AppSettings.DataBase.DefaultPrograms);
+        db.SaveChanges();
+    }
+
+    private static void ConfigureBuilder(WebApplicationBuilder builder)
+    {
+        builder.Logging.AddConsole();
+        builder.Services.ConfigureServiceCollection();
     }
 }
