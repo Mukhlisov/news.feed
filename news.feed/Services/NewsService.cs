@@ -19,19 +19,32 @@ public class NewsService : INewsService
         _programValidator = programValidator;
     }
 
-    public async Task SaveNews(SaveNewsDto saveNewsDto)
+    public async Task SaveNewsAsync(SaveNewsDto saveNewsDto)
     {
         var isValid = await _programValidator.CheckProgramIsValid(saveNewsDto.Program).ConfigureAwait(false);
         if (!isValid)
             throw new ValidationFailedException($"Program: {saveNewsDto.Program} doesn't exist");
 
         _ = await _newsRepository
-            .SaveNews(NewsToSaveFactory.Create(saveNewsDto, AppSettings.DataBase.MainAuthorId))
+            .SaveNewsAsync(NewsToSaveFactory.Create(saveNewsDto, AppSettings.MainAuthorId))
             .ConfigureAwait(false);
     }
 
-    public IEnumerable<News> GetBatchNewsFromSpecifiedProgram(string program, int skip = 0, int take = 0)
+    public async Task<IEnumerable<News>> GetBatchNewsFromSpecifiedProgramAsync(
+        string program,
+        int skip = 0,
+        int take = 0)
     {
-        return _newsRepository.BatchGetNewsFromSpecifiedProgram(program,  skip, take);
+        return await _newsRepository.BatchGetNewsFromSpecifiedProgramAsync(program, skip, take).ConfigureAwait(false);
+    }
+
+    public async Task<NewsBody> GetNewsBodyAsync(Guid id)
+    {
+        return await _newsRepository.GetNewsBodyAsync(id).ConfigureAwait(false);
+    }
+
+    public async Task DeleteNewsAsync(Guid id)
+    {
+        await _newsRepository.DeleteNewsAsync(id).ConfigureAwait(false);
     }
 }

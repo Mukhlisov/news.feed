@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using news.feed.Config.EntityFramework;
+using news.feed.Config.Settings;
 using news.feed.models.Dto;
 using news.feed.models.Exceptions;
 using news.feed.models.Models;
@@ -14,7 +16,7 @@ public class NewsRepository : INewsRepository
         _newsFeedContext = newsFeedContext;
     }
 
-    public async Task<Guid> SaveNews(NewsToSave newsToSave)
+    public async Task<Guid> SaveNewsAsync(NewsToSave newsToSave)
     {
         await using var transaction = await _newsFeedContext.Database.BeginTransactionAsync();
         try
@@ -41,14 +43,56 @@ public class NewsRepository : INewsRepository
         }
     }
 
-    public IEnumerable<News> BatchGetNews(int skip = 0, int take = 5) =>
-        _newsFeedContext.News
-            .Skip(skip)
-            .Take(take);
-
-    public IEnumerable<News> BatchGetNewsFromSpecifiedProgram(string program, int skip = 0, int take = 5) =>
-        _newsFeedContext.News
+    public async Task<IEnumerable<News>> BatchGetNewsAsync(int skip = 0, int take = AppSettings.DefaultNewsBatchSize) =>
+        await _newsFeedContext.News
             .Skip(skip)
             .Take(take)
-            .Where(news => news.Program.Equals(program));
+            .ToListAsync().ConfigureAwait(false);
+
+    public async Task<IEnumerable<News>> BatchGetNewsFromSpecifiedProgramAsync(
+        string program,
+        int skip = 0,
+        int take = AppSettings.DefaultNewsBatchSize)
+    {
+        return await _newsFeedContext.News
+            .Where(news => news.Program.Equals(program))
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync().ConfigureAwait(false);
+    }
+
+    public async Task<NewsBody> GetNewsBodyAsync(Guid id)
+    {
+        var newsBody = await _newsFeedContext.NewsBodies.FirstOrDefaultAsync(body => body.Id == id).ConfigureAwait(false);
+        return newsBody ?? throw new DataNotFoundException($"News body with id {id} not found");
+    }
+
+    public async Task DeleteNewsAsync(Guid id)
+    {        
+        await using var transaction = await _newsFeedContext.Database.BeginTransactionAsync();
+        try
+        {
+            var news = await _newsFeedContext.News.FirstOrDefaultAsync(n => n.Id == id).ConfigureAwait(false);
+            if (news == null)
+                throw new DataNotFoundException($"News with id {id} not found");
+
+            var newsBody = await _newsFeedContext.NewsBodies.FirstOrDefaultAsync(body => body.Id == news.BodyId)
+                .ConfigureAwait(false);
+
+            if (newsBody is not null)
+                _newsFeedContext.NewsBodies.Remove(newsBody);
+            _newsFeedContext.News.Remove(news);
+            await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
+            await transaction.CommitAsync().ConfigureAwait(false);
+        }
+        catch (DataNotFoundException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw new FailToModifyDataException($"Failed to delete news with id {id}");
+        }
+    }
 }

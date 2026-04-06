@@ -4,5 +4,5 @@ namespace news.feed.models.Exceptions;
 
 public class FailToModifyDataException : DbException
 {
-    public FailToModifyDataException(string msg) : base(msg) { }
+    public FailToModifyDataException(string message) : base(message) { }
 }

@@ -1,39 +1,48 @@
 using Microsoft.AspNetCore.Mvc;
+using news.feed.Config.Settings;
 using news.feed.models.Dto;
 using news.feed.models.Models;
 using news.feed.Services;
+using news.feed.Utilities;
 
 namespace news.feed.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class NewsController : ApiControllerBase
+[Route("api/v1/[controller]")]
+public class NewsController : ApiControllerBase<NewsController>
 {
     private readonly INewsService _newsService;
-    private readonly ILogger<NewsController> _logger;
 
-    public NewsController(INewsService newsService,  ILogger<NewsController> logger)
+    public NewsController(INewsService newsService, ILogger<NewsController> logger) : base(logger)
     {
         _newsService = newsService;
-        _logger = logger;
     }
 
     [HttpGet]
-    public object GetNews(int skip, int take)
-    {
-        return NotFound("");
-    }
-
-    [HttpGet("program/{program}")]
-    public ActionResult<IEnumerable<News>> GetNewsFromSpecifiedProgram(
-        string program, 
-        [FromQuery(Name = "skip")] int skip, 
-        [FromQuery(Name = "take")] int take)
+    public async Task<ActionResult<IEnumerable<News>>> GetNewsFromSpecifiedProgram(
+        [FromQuery(Name = "program"), ProgramValidation] string program,
+        [FromQuery(Name = "skip")] int skip = 0,
+        [FromQuery(Name = "take")] int take = AppSettings.DefaultNewsBatchSize)
     {
         try
         {
-            var news = _newsService.GetBatchNewsFromSpecifiedProgram(program, skip, take);
+            var news = await _newsService.GetBatchNewsFromSpecifiedProgramAsync(program, skip, take)
+                .ConfigureAwait(false);
             return Ok(news);
+        }
+        catch (Exception ex)
+        {
+            return HandleHttpError(ex);
+        }
+    }
+
+    [HttpGet("body/{id:guid}")]
+    public async Task<ActionResult<NewsBody>> GetNewsBody(Guid id)
+    {
+        try
+        {
+            var newsBody = await _newsService.GetNewsBodyAsync(id).ConfigureAwait(false);
+            return Ok(newsBody);
         }
         catch (Exception ex)
         {
@@ -46,13 +55,26 @@ public class NewsController : ApiControllerBase
     {
         try
         {
-            await _newsService.SaveNews(saveNewsDto).ConfigureAwait(false);
+            await _newsService.SaveNewsAsync(saveNewsDto).ConfigureAwait(false);
             return Created("", null); // (mukhlisov) может потом возвращать url на новость с сайта
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
             return HandleHttpError(ex);
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> DeleteNews(Guid id)
+    {
+        try
+        {
+            await _newsService.DeleteNewsAsync(id).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return HandleHttpError(ex); //TODO: (mukhlisov) добавить кастомный ApiOperationResult (HasErrors, Errors, Result) 
         }
     }
 }

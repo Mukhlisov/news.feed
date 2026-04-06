@@ -5,6 +5,8 @@ namespace news.feed.Services;
 
 public interface INewsService
 {
-    public Task SaveNews(SaveNewsDto saveNewsDto);
-    public IEnumerable<News> GetBatchNewsFromSpecifiedProgram(string program, int skip = 0, int take = 0);
+    Task SaveNewsAsync(SaveNewsDto saveNewsDto);
+    Task<IEnumerable<News>> GetBatchNewsFromSpecifiedProgramAsync(string program, int skip = 0, int take = 0);
+    Task<NewsBody> GetNewsBodyAsync(Guid id);
+    Task DeleteNewsAsync(Guid id);
 }
