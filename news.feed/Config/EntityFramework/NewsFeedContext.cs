@@ -28,7 +28,7 @@ public class NewsFeedContext : DbContext
             entity.Property(news => news.Title)
                 .HasMaxLength(150)
                 .IsRequired();
-            entity.Property(news => news.BodyId)
+            entity.Property(news => news.BodyId) // Не стал делать FK, чтобы не подтягивать за собой тело новости
                 .IsRequired();
             entity.Property(news => news.Program)
                 .HasMaxLength(AppSettings.DataBase.ProgramAliasLength)
