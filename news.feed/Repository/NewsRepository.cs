@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using news.feed.Config.EntityFramework;
-using news.feed.Config.Settings;
+using news.feed.models;
 using news.feed.models.Dto;
 using news.feed.models.Exceptions;
 using news.feed.models.Models;
@@ -16,7 +16,7 @@ public class NewsRepository : INewsRepository
         _newsFeedContext = newsFeedContext;
     }
 
-    public async Task<Guid> SaveNewsAsync(NewsToSave newsToSave)
+    public async Task<News> CreateNewsAsync(NewsToSave newsToSave)
     {
         await using var transaction = await _newsFeedContext.Database.BeginTransactionAsync();
         try
@@ -34,7 +34,7 @@ public class NewsRepository : INewsRepository
             }).ConfigureAwait(false);
             await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
-            return entity.Entity.Id;
+            return entity.Entity;
         }
         catch (Exception)
         {
@@ -43,7 +43,7 @@ public class NewsRepository : INewsRepository
         }
     }
 
-    public async Task<IEnumerable<News>> BatchGetNewsAsync(int skip = 0, int take = AppSettings.DefaultNewsBatchSize) =>
+    public async Task<IEnumerable<News>> BatchGetNewsAsync(int skip = 0, int take = Consts.DefaultNewsBatchSize) =>
         await _newsFeedContext.News
             .Skip(skip)
             .Take(take)
@@ -52,7 +52,7 @@ public class NewsRepository : INewsRepository
     public async Task<IEnumerable<News>> BatchGetNewsFromSpecifiedProgramAsync(
         string program,
         int skip = 0,
-        int take = AppSettings.DefaultNewsBatchSize)
+        int take = Consts.DefaultNewsBatchSize)
     {
         return await _newsFeedContext.News
             .Where(news => news.Program.Equals(program))
@@ -61,7 +61,7 @@ public class NewsRepository : INewsRepository
             .ToListAsync().ConfigureAwait(false);
     }
 
-    public async Task<NewsBody> GetNewsBodyAsync(Guid id)
+    public async Task<NewsBody> GetNewsBodyByIdAsync(Guid id)
     {
         var newsBody = await _newsFeedContext.NewsBodies.FirstOrDefaultAsync(body => body.Id == id).ConfigureAwait(false);
         return newsBody ?? throw new DataNotFoundException($"News body with id {id} not found");

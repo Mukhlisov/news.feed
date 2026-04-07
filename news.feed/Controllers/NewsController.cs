@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using news.feed.Config.Settings;
+using news.feed.models;
 using news.feed.models.Dto;
 using news.feed.models.Models;
 using news.feed.Services;
@@ -19,10 +19,26 @@ public class NewsController : ApiControllerBase<NewsController>
     }
 
     [HttpGet]
+    public async Task<ActionResult<IEnumerable<News>>> GetNews(
+        [FromQuery(Name = "skip"), ValueRange(0, Consts.MaxSkip)] int skip = 0,
+        [FromQuery(Name = "take"), ValueRange(0, Consts.MaxTake)] int take = Consts.DefaultNewsBatchSize)
+    {
+        try
+        {
+            var news = await _newsService.GetNewsAsync(skip, take).ConfigureAwait(false);
+            return Ok(news);
+        }
+        catch (Exception ex)
+        {
+            return HandleHttpError(ex);
+        }
+    }
+
+    [HttpGet("{program}")]
     public async Task<ActionResult<IEnumerable<News>>> GetNewsFromSpecifiedProgram(
-        [FromQuery(Name = "program"), ProgramValidation] string program,
-        [FromQuery(Name = "skip")] int skip = 0,
-        [FromQuery(Name = "take")] int take = AppSettings.DefaultNewsBatchSize)
+        [FromRoute(Name = "program"), ProgramValidation] string program,
+        [FromQuery(Name = "skip"), ValueRange(0, Consts.MaxSkip)] int skip = 0,
+        [FromQuery(Name = "take"), ValueRange(0, Consts.MaxTake)] int take = Consts.DefaultNewsBatchSize)
     {
         try
         {
@@ -37,11 +53,11 @@ public class NewsController : ApiControllerBase<NewsController>
     }
 
     [HttpGet("body/{id:guid}")]
-    public async Task<ActionResult<NewsBody>> GetNewsBody(Guid id)
+    public async Task<ActionResult<NewsBody>> GetNewsBodyById(Guid id)
     {
         try
         {
-            var newsBody = await _newsService.GetNewsBodyAsync(id).ConfigureAwait(false);
+            var newsBody = await _newsService.GetNewsBodyByIdAsync(id).ConfigureAwait(false);
             return Ok(newsBody);
         }
         catch (Exception ex)
@@ -50,13 +66,14 @@ public class NewsController : ApiControllerBase<NewsController>
         }
     }
 
-    [HttpPost("create")]
-    public async Task<ActionResult> CreateNews([FromBody] SaveNewsDto saveNewsDto)
+    // TODO AddAuth
+    [HttpPost]
+    public async Task<ActionResult> CreateNews([FromBody, ProgramValidation] CreateNewsDto createNewsDto)
     {
         try
         {
-            await _newsService.SaveNewsAsync(saveNewsDto).ConfigureAwait(false);
-            return Created("", null); // (mukhlisov) может потом возвращать url на новость с сайта
+            var creationResult = await _newsService.CreateNewsAsync(createNewsDto).ConfigureAwait(false);
+            return Created(creationResult.Uri, creationResult.Result);
         }
         catch (Exception ex)
         {
@@ -64,6 +81,7 @@ public class NewsController : ApiControllerBase<NewsController>
         }
     }
 
+    // TODO AddAuth
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteNews(Guid id)
     {
@@ -74,7 +92,9 @@ public class NewsController : ApiControllerBase<NewsController>
         }
         catch (Exception ex)
         {
-            return HandleHttpError(ex); //TODO: (mukhlisov) добавить кастомный ApiOperationResult (HasErrors, Errors, Result) 
+            return HandleHttpError(ex);
         }
     }
+
+    // TODO update news
 }

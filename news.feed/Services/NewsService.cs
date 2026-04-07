@@ -1,46 +1,51 @@
 using news.feed.Config.Settings;
+using news.feed.models;
 using news.feed.models.Dto;
-using news.feed.models.Exceptions;
 using news.feed.models.Models;
 using news.feed.Repository;
 using Tools;
+using UriBuilder = news.feed.Utilities.UriBuilder;
 
 namespace news.feed.Services;
 
 public class NewsService : INewsService
 {
     private readonly INewsRepository _newsRepository;
-    private readonly ProgramValidator _programValidator;
 
-    public NewsService(INewsRepository newsRepository,
-        ProgramValidator programValidator)
+    public NewsService(INewsRepository newsRepository)
     {
         _newsRepository = newsRepository;
-        _programValidator = programValidator;
     }
 
-    public async Task SaveNewsAsync(SaveNewsDto saveNewsDto)
+    public async Task<CreationResult<News>> CreateNewsAsync(CreateNewsDto createNewsDto)
     {
-        var isValid = await _programValidator.CheckProgramIsValid(saveNewsDto.Program).ConfigureAwait(false);
-        if (!isValid)
-            throw new ValidationFailedException($"Program: {saveNewsDto.Program} doesn't exist");
-
-        _ = await _newsRepository
-            .SaveNewsAsync(NewsToSaveFactory.Create(saveNewsDto, AppSettings.MainAuthorId))
+        var news = await _newsRepository
+            .CreateNewsAsync(NewsToSaveFactory.Create(createNewsDto, AppSettings.MainAuthorId))
             .ConfigureAwait(false);
+        var uri = new UriBuilder(AppSettings.Domain)
+            .AppendSegment(createNewsDto.Program)
+            .AppendSegment(news.Id)
+            .BuildHttps();
+
+        return new CreationResult<News> { Uri = uri, Result = news };
+    }
+
+    public async Task<IEnumerable<News>> GetNewsAsync(int skip, int take = Consts.DefaultNewsBatchSize)
+    {
+        return await _newsRepository.BatchGetNewsAsync(skip, take).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<News>> GetBatchNewsFromSpecifiedProgramAsync(
         string program,
         int skip = 0,
-        int take = 0)
+        int take = Consts.DefaultNewsBatchSize)
     {
         return await _newsRepository.BatchGetNewsFromSpecifiedProgramAsync(program, skip, take).ConfigureAwait(false);
     }
 
-    public async Task<NewsBody> GetNewsBodyAsync(Guid id)
+    public async Task<NewsBody> GetNewsBodyByIdAsync(Guid id)
     {
-        return await _newsRepository.GetNewsBodyAsync(id).ConfigureAwait(false);
+        return await _newsRepository.GetNewsBodyByIdAsync(id).ConfigureAwait(false);
     }
 
     public async Task DeleteNewsAsync(Guid id)

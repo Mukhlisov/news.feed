@@ -12,6 +12,6 @@ public class ProgramValidator
         _newsFeedContext = newsFeedContext;
     }
 
-    public Task<bool> CheckProgramIsValid(string program) => 
+    public Task<bool> CheckProgramIsValidAsync(string program) => 
         _newsFeedContext.Programs.AnyAsync(p => p.Alias == program);
 }

@@ -4,8 +4,8 @@ using Program = models.Models.Program;
 
 public static class AppSettings
 {
-    public const int DefaultNewsBatchSize = 10;
-    public static readonly Guid MainAuthorId = new("67c368a9-97ed-4ef2-ba3f-e7eb9d2946e7");
+    public static readonly Guid MainAuthorId = new("67c368a9-97ed-4ef2-ba3f-e7eb9d2946e7"); // TODO external setting
+    public const string Domain = "babywalk.ru"; // TODO external setting
 
     public static class DataBase
     {

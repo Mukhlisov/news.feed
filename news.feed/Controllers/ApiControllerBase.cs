@@ -5,16 +5,16 @@ namespace news.feed.Controllers;
 
 public class ApiControllerBase<T> : ControllerBase
 {
-    protected readonly ILogger<T> Logger;
+    private readonly ILogger<T> _logger;
 
     public ApiControllerBase(ILogger<T> logger)
     {
-        Logger = logger;
+        _logger = logger;
     }
 
     public ActionResult HandleHttpError(Exception ex)
     {
-        Logger.LogError(ex, ex.Message);
+        _logger.LogError(ex, ex.Message);
         return ex switch
         {
             FailToModifyDataException exception => StatusCode(500, exception.Message),
