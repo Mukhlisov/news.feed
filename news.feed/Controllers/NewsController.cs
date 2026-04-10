@@ -103,7 +103,7 @@ public class NewsController : ApiControllerBase<NewsController>
         try
         {
             var updateResult = await _newsService.UpdateNewsAsync(updateNewsDto).ConfigureAwait(false);
-            return Ok(updateResult);
+            return Created(updateResult.Uri, updateResult.Result);
         }
         catch (Exception ex)
         {
