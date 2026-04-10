@@ -38,8 +38,8 @@ public class Program
 
     private static void ConfigureBuilder(WebApplicationBuilder builder)
     {
-        builder.ConfigureCors();
-        builder.ConfigureKestrel();
+        // builder.ConfigureCors();
+        // builder.ConfigureKestrel();
         builder.Logging.AddConsole();
         builder.Services.ConfigureServiceCollection();
     }
