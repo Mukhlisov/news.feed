@@ -34,6 +34,7 @@ public class NewsRepository : INewsRepository
                 UpdateTime = newsToSave.LastUpdateDate,
                 AuthorId = newsToSave.CreatorId
             }).ConfigureAwait(false);
+            await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
             return entity.Entity;
         }
@@ -55,6 +56,7 @@ public class NewsRepository : INewsRepository
                     .SetProperty(n => n.Title, news.Title)
                     .SetProperty(n => n.UpdateTime, news.UpdateTime))
                 .ConfigureAwait(false);
+            await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
             return updated > 0;
         }
@@ -74,6 +76,7 @@ public class NewsRepository : INewsRepository
                 .Where(b => b.Id == newsBody.Id)
                 .ExecuteUpdateAsync(s => s.SetProperty(nb => nb.Body, newsBody.Body))
                 .ConfigureAwait(false);
+            await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
             return updated > 0;
         }
@@ -130,6 +133,7 @@ public class NewsRepository : INewsRepository
             if (newsBody is not null)
                 _newsFeedContext.NewsBodies.Remove(newsBody);
             _newsFeedContext.News.Remove(news);
+            await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         }
         catch (DataNotFoundException)
