@@ -1,7 +1,3 @@
 namespace news.feed.models.Dto;
 
-public class CreationResult<T>
-{
-    public Uri Uri { get; set; }
-    public T Result { get; set; }
-}
+public record CreationResult<T>(Uri Uri, T Result);

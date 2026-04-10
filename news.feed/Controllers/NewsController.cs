@@ -96,6 +96,19 @@ public class NewsController : ApiControllerBase<NewsController>
         }
     }
 
-    // TODO update news
+    // TODO AddAuth
+    [HttpPatch]
+    public async Task<ActionResult> UpdateNews([FromBody] UpdateNewsDto updateNewsDto)
+    {
+        try
+        {
+            var updateResult = await _newsService.UpdateNewsAsync(updateNewsDto).ConfigureAwait(false);
+            return Ok(updateResult);
+        }
+        catch (Exception ex)
+        {
+            return HandleHttpError(ex);
+        }
+    }
     // TODO search by news title (fuzzy match)
 }
