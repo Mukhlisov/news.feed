@@ -10,9 +10,18 @@ public class NewsFeedContextFactory : IDesignTimeDbContextFactory<NewsFeedContex
     {
         var optionsBuilder = new DbContextOptionsBuilder<NewsFeedContext>();
 
-        var dbSettings = new MySqlTestSettingsStorage();
+        var dbSettings = GetDbSettings();
         optionsBuilder.UseMySql(dbSettings.ConnectionString, ServerVersion.AutoDetect(dbSettings.ConnectionString));
 
         return new NewsFeedContext(optionsBuilder.Options);
+    }
+
+    private static IDbSettings GetDbSettings()
+    {
+#if DEBUG
+        return new MySqlTestSettingsStorage();
+#else
+        return new MySqlSettings();
+#endif
     }
 }

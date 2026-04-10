@@ -21,8 +21,6 @@ public class NewsFeedContext : DbContext
         {
             entity.ToTable("news");
             entity.HasKey(news => news.Id);
-            entity.Property(news => news.Id)
-                .ValueGeneratedOnAdd();
             entity.Property(news => news.AuthorId)
                 .IsRequired();
             entity.Property(news => news.Title)
@@ -42,8 +40,6 @@ public class NewsFeedContext : DbContext
         {
             entity.ToTable("news_body");
             entity.HasKey(newsBody => newsBody.Id);
-            entity.Property(newsBody => newsBody.Id)
-                .ValueGeneratedOnAdd();
             entity.Property(newsBody => newsBody.Body)
                 .IsRequired();
         });
