@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\news.feed.models\news.feed.models.csproj" />
-      <ProjectReference Include="..\Tools\Tools.csproj" />
     </ItemGroup>
 
     <ItemGroup>
