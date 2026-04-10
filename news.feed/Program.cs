@@ -9,14 +9,21 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
-        ConfigureBuilder(builder);
-        var app = builder.Build();
-        app.MapControllers();
+        try
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            ConfigureBuilder(builder);
+            var app = builder.Build();
+            app.MapControllers();
 
-        FillProgramsTableIfNotExists(app);
+            FillProgramsTableIfNotExists(app);
 
-        app.Run();
+            app.Run();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while starting the application: {ex.Message}");
+        }
     }
 
     private static void FillProgramsTableIfNotExists(WebApplication app)
