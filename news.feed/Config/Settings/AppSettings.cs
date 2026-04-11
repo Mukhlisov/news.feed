@@ -1,11 +1,26 @@
+using news.feed.Utilities;
+
 namespace news.feed.Config.Settings;
 
 using Program = models.Models.Program;
 
 public static class AppSettings
 {
-    public static readonly Guid MainAuthorId = new("67c368a9-97ed-4ef2-ba3f-e7eb9d2946e7"); // TODO external setting
     public const string Domain = "babywalk.ru"; // TODO external setting
+    public const string AdminPanelDomain = $"admin.{Domain}"; // TODO external setting
+    public static readonly Guid MainAuthorId = new("67c368a9-97ed-4ef2-ba3f-e7eb9d2946e7"); // TODO external setting
+
+    public static class Kestrel
+    {
+        public static readonly TimeSpan KeepAliveTimeout = 1.Minutes();
+        public static readonly long MaxRequestBodySize = 5.Megabytes();
+    }
+
+    public static class Policies
+    {
+        public const string AdminPanel = "AdminPanelPolicy";
+        public const string DefaultSite = "GetNewsPolicy";
+    }
 
     public static class DataBase
     {
