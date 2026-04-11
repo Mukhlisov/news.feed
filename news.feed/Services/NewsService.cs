@@ -52,12 +52,12 @@ public class NewsService : INewsService
         return new CreationResult<News>(uri, updatedNews);
     }
 
-    public async Task<IEnumerable<News>> GetNewsAsync(int skip, int take = Consts.DefaultNewsBatchSize)
+    public async Task<IEnumerable<News>> BatchGetNewsAsync(int skip, int take = Consts.DefaultNewsBatchSize)
     {
         return await _newsRepository.BatchGetNewsAsync(skip, take).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<News>> GetBatchNewsFromSpecifiedProgramAsync(
+    public async Task<IEnumerable<News>> BatchGetNewsFromSpecifiedProgramAsync(
         string program,
         int skip = 0,
         int take = Consts.DefaultNewsBatchSize)

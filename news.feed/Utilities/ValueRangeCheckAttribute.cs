@@ -2,12 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace news.feed.Utilities;
 
-public class ValueRangeAttribute : ValidationAttribute
+public class ValueRangeCheckAttribute : ValidationAttribute
 {
     private readonly int _min;
     private readonly int _max;
 
-    public ValueRangeAttribute(int min, int max)
+    public ValueRangeCheckAttribute(int min, int max)
     {
         _min = min;
         _max = max;
