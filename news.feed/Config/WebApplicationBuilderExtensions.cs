@@ -15,7 +15,18 @@ public static class WebApplicationBuilderExtensions
         builder.Services.ConfigureServiceCollection();
     }
 
-    private static void InitAppSettings(this WebApplicationBuilder builder) =>
-        SettingsInitializer.InitSettings()
-            .ForEach(x => builder.Services.AddSingleton(x.GetType(), x));
+    /// <summary>
+    /// Анти-паттерн, но иногда может быть полезен для получения сервисов на этапе конфигурации приложения,
+    /// например, для получения настроек (как это получилось с CORS) из DI контейнера.
+    /// </summary>
+    public static T GetRequiredService<T>(this WebApplicationBuilder builder) where T : notnull
+    {
+        using var scope = builder.Build().Services.CreateScope();
+        return scope.ServiceProvider.GetRequiredService<T>();
+    }
+
+    private static void InitAppSettings(this WebApplicationBuilder builder)
+    {
+        SettingsInitializer.InitSettings().ForEach(x => builder.Services.AddSingleton(x.GetType(), x));
+    }
 }

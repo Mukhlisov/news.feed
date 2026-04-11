@@ -11,7 +11,7 @@ public static class ConfigurationExtensions
     {
         builder.Services.AddCors(options =>
         {
-            var (adminPanel, site) = GetUrisForCorsPolicy();
+            var (adminPanel, site) = GetUrisForCorsPolicy(builder);
             options.AddPolicy(AppSettings.Policies.AdminPanel, policyBuilder =>
             {
                 policyBuilder
@@ -47,15 +47,11 @@ public static class ConfigurationExtensions
         });
     }
 
-    private static (string, string) GetUrisForCorsPolicy()
+    private static (string, string) GetUrisForCorsPolicy(WebApplicationBuilder builder)
     {
-#if DEBUG
-        var adminPanel = new UriBuilder("localhost:3001").BuildHttp().GetLeftPart(UriPartial.Authority);
-        var site = new UriBuilder("localhost:3000").BuildHttp().GetLeftPart(UriPartial.Authority);
-#else
-        var adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttps().GetLeftPart(UriPartial.Authority);
-        var site = new UriBuilder(AppSettings.Domain).BuildHttps().GetLeftPart(UriPartial.Authority);
-#endif
+        var settings = builder.GetRequiredService<AppSettings>();
+        var adminPanel = new UriBuilder(settings.AdminPanelDomain).BuildHttps().GetLeftPart(UriPartial.Authority);
+        var site = new UriBuilder(settings.Domain).BuildHttps().GetLeftPart(UriPartial.Authority);
         return (adminPanel, site);
     }
 }

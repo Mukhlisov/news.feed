@@ -1,6 +1,6 @@
+using configuration.core;
 using Microsoft.EntityFrameworkCore;
 using news.feed.Config.EntityFramework;
-using news.feed.Config.Settings.DbSettings;
 using news.feed.Repository;
 using news.feed.Services;
 
@@ -24,14 +24,9 @@ public static class ConfigureServices
 
     private static void ConfigureDbSettings(this IServiceCollection services)
     {
-#if DEBUG
-        services.AddSingleton<IDbSettings, MySqlTestSettingsStorage>();
-#else
-        services.AddSingleton<IDbSettings, MySqlSettingsStorage>();
-#endif
         services.AddDbContext<NewsFeedContext>((serviceProvider, options) =>
         {
-            var dbSettings = serviceProvider.GetService<IDbSettings>();
+            var dbSettings = serviceProvider.GetService<MySqlSettingsStorage>();
             ArgumentNullException.ThrowIfNull(dbSettings);
             options.UseMySql(dbSettings.ConnectionString, ServerVersion.AutoDetect(dbSettings.ConnectionString));
         });
