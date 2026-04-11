@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "news.feed", "news.feed\news
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "news.feed.models", "news.feed.models\news.feed.models.csproj", "{37074F57-6A2B-4C30-A2ED-43B3559B19D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "configuration.core", "configuration.core\configuration.core.csproj", "{097B58BB-96F7-4614-A7F7-4210CBF5A365}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "extra", "extra\extra.csproj", "{0798D641-5BFF-454B-A73B-8A0E257BA6C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{37074F57-6A2B-4C30-A2ED-43B3559B19D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37074F57-6A2B-4C30-A2ED-43B3559B19D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37074F57-6A2B-4C30-A2ED-43B3559B19D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{097B58BB-96F7-4614-A7F7-4210CBF5A365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{097B58BB-96F7-4614-A7F7-4210CBF5A365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{097B58BB-96F7-4614-A7F7-4210CBF5A365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{097B58BB-96F7-4614-A7F7-4210CBF5A365}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0798D641-5BFF-454B-A73B-8A0E257BA6C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0798D641-5BFF-454B-A73B-8A0E257BA6C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0798D641-5BFF-454B-A73B-8A0E257BA6C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0798D641-5BFF-454B-A73B-8A0E257BA6C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

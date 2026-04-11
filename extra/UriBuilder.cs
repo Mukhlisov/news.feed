@@ -1,4 +1,4 @@
-namespace news.feed.Utilities;
+namespace extra;
 
 public class UriBuilder
 {

@@ -1,29 +1,31 @@
-using news.feed.Config.Settings;
+using configuration.core;
 using news.feed.models;
 using news.feed.models.Dto;
 using news.feed.models.Exceptions;
 using news.feed.models.Models;
 using news.feed.Repository;
 using news.feed.Utilities;
-using UriBuilder = news.feed.Utilities.UriBuilder;
+using UriBuilder = extra.UriBuilder;
 
 namespace news.feed.Services;
 
 public class NewsService : INewsService
 {
     private readonly INewsRepository _newsRepository;
-
-    public NewsService(INewsRepository newsRepository)
+    private readonly AppSettings _appSettings;
+    
+    public NewsService(INewsRepository newsRepository, AppSettings appSettings)
     {
         _newsRepository = newsRepository;
+        _appSettings = appSettings;
     }
 
     public async Task<CreationResult<News>> CreateNewsAsync(CreateNewsDto createNewsDto)
     {
         var news = await _newsRepository
-            .CreateNewsAsync(NewsFactory.Create(createNewsDto, AppSettings.MainAuthorId))
+            .CreateNewsAsync(NewsFactory.Create(createNewsDto, _appSettings.MainAuthorId))
             .ConfigureAwait(false);
-        var uri = new UriBuilder(AppSettings.Domain)
+        var uri = new UriBuilder(_appSettings.Domain)
             .AppendSegment(createNewsDto.Program)
             .AppendSegment(news.Id)
             .BuildHttps();
@@ -45,7 +47,7 @@ public class NewsService : INewsService
 
         if (!isNewsBodyUpdated || !isNewsUpdated)
             throw new FailToModifyDataException($"Failed to update news: newsId = {news.Id}, bodyId = {news.BodyId}");
-        var uri = new UriBuilder(AppSettings.Domain)
+        var uri = new UriBuilder(_appSettings.Domain)
             .AppendSegment(news.Program)
             .AppendSegment(news.Id)
             .BuildHttps();

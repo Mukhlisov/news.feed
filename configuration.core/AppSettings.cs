@@ -1,14 +1,18 @@
-using news.feed.Utilities;
+using extra;
+using news.feed.models.Models;
 
-namespace news.feed.Config.Settings;
+namespace configuration.core;
 
-using Program = models.Models.Program;
-
-public static class AppSettings
+[Setting]
+#pragma warning disable CS8618 // Non-nullable property must contain a non-null value when exiting constructor.
+public class AppSettings
 {
-    public const string Domain = "babywalk.ru"; // TODO external setting
-    public const string AdminPanelDomain = $"admin.{Domain}"; // TODO external setting
-    public static readonly Guid MainAuthorId = new("67c368a9-97ed-4ef2-ba3f-e7eb9d2946e7"); // TODO external setting
+    [Secret(Name = "SITE_DOMAIN")]
+    public string Domain { get; set; }
+    [Secret(Name = "ADMIN_PANEL_DOMAIN")]
+    public string AdminPanelDomain { get; set; } = "admin.babywalk.ru";
+    [Secret(Name = "AUTHOR_ID", Override = true)]
+    public Guid MainAuthorId { get; set; } //= new("67c368a9-97ed-4ef2-ba3f-e7eb9d2946e7");
 
     public static class Kestrel
     {

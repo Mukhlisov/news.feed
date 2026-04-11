@@ -1,5 +1,5 @@
+using configuration.core;
 using news.feed.Config.EntityFramework;
-using news.feed.Config.Settings;
 
 namespace news.feed.Config;
 

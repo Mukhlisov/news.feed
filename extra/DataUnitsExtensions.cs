@@ -1,4 +1,4 @@
-namespace news.feed.Utilities;
+namespace extra;
 /// <summary>
 /// Возвращает размер данных выраженный в байтах
 /// </summary>

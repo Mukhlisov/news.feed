@@ -1,7 +1,7 @@
+using extra;
+using configuration.core;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using news.feed.Config.Settings;
-using news.feed.Utilities;
-using UriBuilder = news.feed.Utilities.UriBuilder;
+using UriBuilder = extra.UriBuilder;
 
 namespace news.feed.Config;
 
