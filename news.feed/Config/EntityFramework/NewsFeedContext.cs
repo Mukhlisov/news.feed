@@ -1,5 +1,5 @@
-using configuration.core;
 using Microsoft.EntityFrameworkCore;
+using news.feed.Config.settings;
 using news.feed.models.Models;
 
 namespace news.feed.Config.EntityFramework;
@@ -35,6 +35,7 @@ public class NewsFeedContext : DbContext
                 .IsRequired();
             entity.Property(news => news.UpdateTime)
                 .IsRequired();
+            entity.HasIndex(news => news.Program, "IX_news_Program");
         });
         modelBuilder.Entity<NewsBody>(entity =>
         {

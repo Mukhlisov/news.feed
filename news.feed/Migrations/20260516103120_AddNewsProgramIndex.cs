@@ -5,7 +5,7 @@
 namespace news.feed.Migrations
 {
     /// <inheritdoc />
-    public partial class RemoveIdGeneration : Migration
+    public partial class AddNewsProgramIndex : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
