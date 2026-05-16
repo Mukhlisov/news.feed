@@ -1,6 +1,6 @@
 using extra;
-using configuration.core;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using news.feed.Config.settings;
 using UriBuilder = extra.UriBuilder;
 
 namespace news.feed.Config;
@@ -11,7 +11,7 @@ public static class ConfigurationExtensions
     {
         builder.Services.AddCors(options =>
         {
-            var (adminPanel, site) = GetUrisForCorsPolicy(builder);
+            var (adminPanel, site) = GetUrisForCorsPolicy();
             options.AddPolicy(AppSettings.Policies.AdminPanel, policyBuilder =>
             {
                 policyBuilder
@@ -47,11 +47,10 @@ public static class ConfigurationExtensions
         });
     }
 
-    private static (string, string) GetUrisForCorsPolicy(WebApplicationBuilder builder)
+    private static (string, string) GetUrisForCorsPolicy()
     {
-        var settings = builder.GetRequiredService<AppSettings>();
-        var adminPanel = new UriBuilder(settings.AdminPanelDomain).BuildHttps().GetLeftPart(UriPartial.Authority);
-        var site = new UriBuilder(settings.Domain).BuildHttps().GetLeftPart(UriPartial.Authority);
+        var adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttps().GetLeftPart(UriPartial.Authority);
+        var site = new UriBuilder(AppSettings.Domain).BuildHttps().GetLeftPart(UriPartial.Authority);
         return (adminPanel, site);
     }
 }

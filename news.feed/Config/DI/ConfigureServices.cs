@@ -1,6 +1,6 @@
-using configuration.core;
 using Microsoft.EntityFrameworkCore;
 using news.feed.Config.EntityFramework;
+using news.feed.Config.settings;
 using news.feed.Repository;
 using news.feed.Services;
 
@@ -22,13 +22,6 @@ public static class ConfigureServices
         services.AddScoped<ProgramValidator>();
     }
 
-    private static void ConfigureDbSettings(this IServiceCollection services)
-    {
-        services.AddDbContext<NewsFeedContext>((serviceProvider, options) =>
-        {
-            var dbSettings = serviceProvider.GetService<MySqlSettingsStorage>();
-            ArgumentNullException.ThrowIfNull(dbSettings);
-            options.UseMySql(dbSettings.ConnectionString, ServerVersion.AutoDetect(dbSettings.ConnectionString));
-        });
-    }
+    private static void ConfigureDbSettings(this IServiceCollection services) =>
+        services.AddDbContext<NewsFeedContext>(options => options.UseNpgsql(PostgresSettingsStorage.ConnectionString));
 }

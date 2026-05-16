@@ -1,4 +1,5 @@
 using System.Reflection;
+using configuration.core.Exceptions;
 
 namespace configuration.core;
 
@@ -47,9 +48,20 @@ public static class SettingsInitializer
         }
     };
 
-    public static object[] InitSettings()
+    private static readonly Dictionary<Type, object> DefaultValues = new()
     {
-        var settingInstances = Assembly.GetExecutingAssembly().GetTypes()
+        { typeof(int), 0 },
+        { typeof(long), 0 },
+        { typeof(double), 0.0 },
+        { typeof(bool), false },
+        { typeof(Guid), Guid.Empty },
+        { typeof(DateTime), DateTime.MinValue },
+        { typeof(string), string.Empty }
+    };
+
+    public static void InitSettings(bool ignoreEnvVarMiss = false)
+    {
+        var settingInstances = Assembly.GetCallingAssembly().GetTypes()
             .Where(t => t is { IsClass: true, IsAbstract: false })
             .Where(t => t.GetCustomAttribute<SettingAttribute>() is not null)
             .Select(Activator.CreateInstance)
@@ -62,25 +74,35 @@ public static class SettingsInitializer
                 .Select(prop => (prop, prop.GetCustomAttribute<SecretAttribute>()))
                 .Where(x => x.Item2 is not null)
                 .ToList();
-            InitProps(secretProps, instance);
+            InitProps(secretProps, instance, ignoreEnvVarMiss);
         }
-
-        return settingInstances!;
     }
 
-    private static void InitProps(List<(PropertyInfo, SecretAttribute?)> secretProps, object instance)
+    private static void InitProps(
+        List<(PropertyInfo, SecretAttribute?)> secretProps,
+        object instance,
+        bool ignoreEnvVarMiss)
     {
         foreach (var (prop, attribute) in secretProps)
-            if (attribute!.Override || prop.GetValue(instance) is null)
-                prop.SetValue(instance, GetValueFromEnvironment(prop, attribute!.Name));
+            if (attribute!.Override)
+                prop.SetValue(instance, GetValueFromEnvironment(prop, attribute.Name, ignoreEnvVarMiss));
     }
 
-    private static object GetValueFromEnvironment(PropertyInfo prop, string? name)
+    private static object GetValueFromEnvironment(PropertyInfo prop, string? name, bool ignoreEnvVarMiss)
     {
-        var envName = name ?? prop.Name;
-        var value = Environment.GetEnvironmentVariable(envName)
-                    ?? throw new Exception($"ENV variable: '{envName}' not found");
+        try
+        {
+            var envName = name ?? prop.Name;
+            var value = Environment.GetEnvironmentVariable(envName) ??
+                        throw new EnvVarNotFoundException($"ENV variable: '{envName}' not found");
 
-        return DefaultTypeConverters[prop.PropertyType].Invoke(value);
+            return DefaultTypeConverters[prop.PropertyType].Invoke(value);
+        }
+        catch (EnvVarNotFoundException)
+        {
+            if (!ignoreEnvVarMiss)
+                throw;
+            return DefaultValues[prop.PropertyType];
+        }
     }
 }

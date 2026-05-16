@@ -1,4 +1,4 @@
-using configuration.core;
+using news.feed.Config.settings;
 using news.feed.models;
 using news.feed.models.Dto;
 using news.feed.models.Exceptions;
@@ -12,20 +12,18 @@ namespace news.feed.Services;
 public class NewsService : INewsService
 {
     private readonly INewsRepository _newsRepository;
-    private readonly AppSettings _appSettings;
     
-    public NewsService(INewsRepository newsRepository, AppSettings appSettings)
+    public NewsService(INewsRepository newsRepository)
     {
         _newsRepository = newsRepository;
-        _appSettings = appSettings;
     }
 
     public async Task<CreationResult<News>> CreateNewsAsync(CreateNewsDto createNewsDto)
     {
         var news = await _newsRepository
-            .CreateNewsAsync(NewsFactory.Create(createNewsDto, _appSettings.MainAuthorId))
+            .CreateNewsAsync(NewsFactory.Create(createNewsDto, AppSettings.MainAuthorId))
             .ConfigureAwait(false);
-        var uri = new UriBuilder(_appSettings.Domain)
+        var uri = new UriBuilder(AppSettings.Domain)
             .AppendSegment(createNewsDto.Program)
             .AppendSegment(news.Id)
             .BuildHttps();
@@ -47,7 +45,7 @@ public class NewsService : INewsService
 
         if (!isNewsBodyUpdated || !isNewsUpdated)
             throw new FailToModifyDataException($"Failed to update news: newsId = {news.Id}, bodyId = {news.BodyId}");
-        var uri = new UriBuilder(_appSettings.Domain)
+        var uri = new UriBuilder(AppSettings.Domain)
             .AppendSegment(news.Program)
             .AppendSegment(news.Id)
             .BuildHttps();

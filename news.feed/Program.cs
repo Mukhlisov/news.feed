@@ -1,3 +1,4 @@
+using configuration.core;
 using news.feed.Config;
 
 namespace news.feed;
@@ -8,6 +9,7 @@ public class Program
     {
         try
         {
+            SettingsInitializer.InitSettings();
             var builder = WebApplication.CreateBuilder(args);
             builder.ConfigureBuilder();
             var app = builder.Build();
