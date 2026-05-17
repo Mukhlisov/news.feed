@@ -1,4 +1,3 @@
-using configuration.core;
 using news.feed.Config.EntityFramework;
 using news.feed.Config.settings;
 

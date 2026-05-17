@@ -7,7 +7,7 @@ namespace news.feed.Config.settings;
 #pragma warning disable CS8618 // Non-nullable property must contain a non-null value when exiting constructor.
 public class AppSettings
 {
-    [Secret(Name = "SITE_DOMAIN", Override = false)]
+    [Secret(Name = "SITE_DOMAIN")]
     public static string Domain { get; set; }
     [Secret(Name = "ADMIN_PANEL_DOMAIN", Override = false)]
     public static string AdminPanelDomain { get; set; } = "admin.babywalk.ru";

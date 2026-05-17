@@ -5,12 +5,14 @@
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/news.feed/bin/Debug/net9.0" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <envs>
-      <env name="CONNECTION_STRING" value="Host=localhost;Port=5432;Database=news-feed;Username=postgres;Password=1234;" />
       <env name="AUTHOR_ID" value="67c368a9-97ed-4ef2-ba3f-e7eb9d2946e7" />
+      <env name="CONNECTION_STRING" value="Host=localhost;Port=5432;Database=news-feed;Username=postgres;Password=1234;" />
       <env name="SITE_DOMAIN" value="localhost:3000" />
     </envs>
+    <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="ENV_FILE_PATHS" value="" />
     <option name="REDIRECT_INPUT_PATH" value="" />
+    <option name="PTY_MODE" value="Auto" />
     <option name="MIXED_MODE_DEBUG" value="0" />
     <option name="USE_MONO" value="0" />
     <option name="RUNTIME_ARGUMENTS" value="" />
