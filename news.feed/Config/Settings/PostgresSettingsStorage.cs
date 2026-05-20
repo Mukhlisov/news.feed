@@ -1,6 +1,6 @@
 using configuration.core;
 
-namespace news.feed.Config.settings;
+namespace news.feed.Config.Settings;
 
 [Setting]
 #pragma warning disable CS8618

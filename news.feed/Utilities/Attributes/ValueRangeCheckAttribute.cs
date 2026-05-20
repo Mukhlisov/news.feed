@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using extra;
 
-namespace news.feed.Utilities;
+namespace news.feed.Utilities.Attributes;
 
 public class ValueRangeCheckAttribute : ValidationAttribute
 {

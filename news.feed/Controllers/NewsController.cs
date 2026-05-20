@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using news.feed.Auth;
 using news.feed.models;
 using news.feed.models.Dto;
 using news.feed.models.Models;
-using news.feed.Services;
-using news.feed.Utilities;
+using news.feed.models.Policies;
+using news.feed.Services.News;
+using news.feed.Utilities.Attributes;
 
 namespace news.feed.Controllers;
 
@@ -18,6 +21,7 @@ public class NewsController : ApiControllerBase<NewsController>
         _newsService = newsService;
     }
 
+    [EnableCors(nameof(Policies.GetNewsPolicy))]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<News>>> GetNews(
         [FromQuery(Name = "skip"), ValueRangeCheck(0, Consts.MaxSkip)] int skip,
@@ -34,6 +38,7 @@ public class NewsController : ApiControllerBase<NewsController>
         }
     }
 
+    [EnableCors(nameof(Policies.GetNewsPolicy))]
     [HttpGet("{program}")]
     public async Task<ActionResult<IEnumerable<News>>> GetNewsFromSpecifiedProgram(
         [FromRoute(Name = "program"), ProgramValidation] string program,
@@ -52,6 +57,7 @@ public class NewsController : ApiControllerBase<NewsController>
         }
     }
 
+    [EnableCors(nameof(Policies.GetNewsPolicy))]
     [HttpGet("body/{id:guid}")]
     public async Task<ActionResult<NewsBody>> GetNewsBodyById(Guid id)
     {
@@ -66,7 +72,8 @@ public class NewsController : ApiControllerBase<NewsController>
         }
     }
 
-    // TODO AddAuth
+    [Auth]
+    [EnableCors(nameof(Policies.AdminPanelPolicy))]
     [HttpPost]
     public async Task<ActionResult> CreateNews([FromBody, ProgramValidation] CreateNewsDto createNewsDto)
     {
@@ -81,7 +88,8 @@ public class NewsController : ApiControllerBase<NewsController>
         }
     }
 
-    // TODO AddAuth
+    [Auth]
+    [EnableCors(nameof(Policies.AdminPanelPolicy))]
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteNews(Guid id)
     {
@@ -96,7 +104,8 @@ public class NewsController : ApiControllerBase<NewsController>
         }
     }
 
-    // TODO AddAuth
+    [Auth]
+    [EnableCors(nameof(Policies.AdminPanelPolicy))]
     [HttpPatch]
     public async Task<ActionResult> UpdateNews([FromBody] UpdateNewsDto updateNewsDto)
     {

@@ -1,7 +1,7 @@
 using configuration.core;
 using extra;
 
-namespace news.feed.Config.settings;
+namespace news.feed.Config.Settings;
 
 [Setting]
 #pragma warning disable CS8618 // Non-nullable property must contain a non-null value when exiting constructor.
@@ -18,12 +18,6 @@ public class AppSettings
     {
         public static readonly TimeSpan KeepAliveTimeout = 1.Minutes();
         public static readonly long MaxRequestBodySize = 5.Megabytes();
-    }
-
-    public static class Policies
-    {
-        public const string AdminPanel = "AdminPanelPolicy";
-        public const string DefaultSite = "GetNewsPolicy";
     }
 
     public static class DataBase

@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using news.feed.Auth;
 using news.feed.Config.EntityFramework;
-using news.feed.Config.settings;
+using news.feed.Config.Settings;
 using news.feed.Repository;
-using news.feed.Services;
+using news.feed.Services.Auth;
+using news.feed.Services.Hashing;
+using news.feed.Services.News;
 
 namespace news.feed.Config.DI;
 
@@ -17,9 +21,17 @@ public static class ConfigureServices
 
     private static void ConfigureDependencies(this IServiceCollection services)
     {
+        services.AddTransient<IMemoryCache, MemoryCache>();
+
         services.AddScoped<INewsService, NewsService>();
         services.AddScoped<INewsRepository, NewsRepository>();
         services.AddScoped<ProgramValidator>();
+
+        services.AddSingleton<IHasher, Hasher>();
+        services.AddSingleton<ISecretProvider, SecretProvider>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<ISessionManager, SessionManager>();
+        services.AddScoped<AuthAttribute>();
     }
 
     private static void ConfigureDbSettings(this IServiceCollection services) =>

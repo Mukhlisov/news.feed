@@ -1,4 +1,4 @@
-using news.feed.Services;
+using news.feed.Services.News;
 
 namespace news.feed.Utilities;
 

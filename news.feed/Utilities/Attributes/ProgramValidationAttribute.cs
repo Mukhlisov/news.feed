@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using news.feed.models.Dto;
-using news.feed.Services;
+using news.feed.Services.News;
 
-namespace news.feed.Utilities;
+namespace news.feed.Utilities.Attributes;
 
 public sealed class ProgramValidationAttribute : ValidationAttribute
 {
