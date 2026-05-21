@@ -13,6 +13,7 @@ public class NewsFeedContext : DbContext
     public DbSet<News> News { get; set; }
     public DbSet<NewsBody> NewsBodies { get; set; }
     public DbSet<models.Models.Program> Programs { get; set; }
+    public DbSet<Attachment> Attachments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,6 +44,10 @@ public class NewsFeedContext : DbContext
             entity.HasKey(newsBody => newsBody.Id);
             entity.Property(newsBody => newsBody.Body)
                 .IsRequired();
+            entity.HasMany(newsBody => newsBody.Attachments)
+                .WithOne()
+                .HasForeignKey(attachment => attachment.NewsBodyId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
         modelBuilder.Entity<models.Models.Program>(entity =>
         {
@@ -60,6 +65,11 @@ public class NewsFeedContext : DbContext
                 .WithOne()
                 .HasForeignKey(news => news.Program)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<Attachment>(entity =>
+        {
+            entity.ToTable("news_attachment");
+            entity.HasKey(attachment => attachment.Id);
         });
     }
 }
