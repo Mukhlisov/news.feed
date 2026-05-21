@@ -5,6 +5,7 @@ using news.feed.Config.Settings;
 
 namespace news.feed.Config.EntityFramework;
 
+// Нужно для создания / применения миграций
 public class NewsFeedContextFactory : IDesignTimeDbContextFactory<NewsFeedContext>
 {
     public NewsFeedContext CreateDbContext(string[] args)

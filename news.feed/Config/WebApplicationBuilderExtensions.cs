@@ -14,7 +14,6 @@ public static class WebApplicationBuilderExtensions
         builder.Logging.AddConsole();
         builder.Services.ConfigureServiceCollection();
 
-        // TODO Вынести в ApplyPolicies extension
         builder.Services.AddRateLimiter(options =>
         {
             options.AddFixedWindowLimiter(policyName: nameof(Policies.LoginFixedWindowPolicy), fixedWindowOptions =>

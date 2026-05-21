@@ -18,10 +18,7 @@ public static class ConfigurationExtensions
                 policyBuilder
                     .WithOrigins(adminPanel)
                     .AllowAnyMethod()
-                    .WithHeaders(
-                        // "Authorization",
-                        "Content-Type"
-                    );
+                    .WithHeaders("X-Babywalk-Token");
             });
             options.AddPolicy(nameof(Policies.GetNewsPolicy), policyBuilder =>
             {
