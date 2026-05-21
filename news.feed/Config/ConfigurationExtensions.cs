@@ -47,8 +47,13 @@ public static class ConfigurationExtensions
 
     private static (string, string) GetUrisForCorsPolicy()
     {
+#if DEBUG
+        var adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttp().GetLeftPart(UriPartial.Authority);
+        var site = new UriBuilder(AppSettings.Domain).BuildHttp().GetLeftPart(UriPartial.Authority);
+#else
         var adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttps().GetLeftPart(UriPartial.Authority);
         var site = new UriBuilder(AppSettings.Domain).BuildHttps().GetLeftPart(UriPartial.Authority);
+#endif
         return (adminPanel, site);
     }
 }
