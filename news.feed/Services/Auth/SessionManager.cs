@@ -28,9 +28,6 @@ public class SessionManager : ISessionManager
             return false;
 
         var secret = _secretProvider.GetSecret(AuthSettings.AdminName);
-        if (secret.IsExpired)
-            return false;
-        var exceptedToken = _hasher.Hash($"{AuthSettings.AdminName}--{secret.Data}");
-        return token == exceptedToken;
+        return !secret.IsExpired && _hasher.Verify($"{AuthSettings.AdminName}--{secret.Data}", token);
     }
 }

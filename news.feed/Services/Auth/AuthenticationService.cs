@@ -16,8 +16,7 @@ public class AuthenticationService : IAuthenticationService
 
     public void CheckIsAuthenticated(LoginDto loginDto)
     {
-        var hashedPassword = _hasher.Hash(loginDto.Password);
-        if (AuthSettings.AdminName == loginDto.Login && hashedPassword == AuthSettings.PasswordHash)
+        if (AuthSettings.AdminName == loginDto.Login && _hasher.Verify(loginDto.Password, AuthSettings.PasswordHash))
             return;
         throw new FailedToAuthenticateException("Incorrect login or password");
     }
