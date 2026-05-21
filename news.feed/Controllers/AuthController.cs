@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using news.feed.models.Dto.Auth;
 using news.feed.models.Policies;
 using news.feed.Services.Auth;
+using news.feed.Utilities.Attributes;
 
 namespace news.feed.Controllers;
 
@@ -27,7 +28,7 @@ public class AuthController : ApiControllerBase<AuthController>
     [EnableRateLimiting(nameof(Policies.LoginFixedWindowPolicy))]
     [EnableCors(nameof(Policies.AdminPanelPolicy))]
     [HttpPost]
-    public IActionResult Login([FromBody] LoginDto loginDto)
+    public IActionResult Login([FromBody, LoginDtoValidation] LoginDto loginDto)
     {
         try
         {

@@ -6,9 +6,6 @@ namespace news.feed.Config.Settings;
 [Setting]
 public class AuthSettings
 {
-    [Secret(Name = "AUTH_SECRET_KEY")] // seed for session token generation
-    public static string SecretKey { get; set; }
-
     [Secret(Name = "AUTH_ADMIN_NAME")]
     public static string AdminName { get; set; }
 
