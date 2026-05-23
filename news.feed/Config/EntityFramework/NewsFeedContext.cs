@@ -70,6 +70,7 @@ public class NewsFeedContext : DbContext
         {
             entity.ToTable("news_attachment");
             entity.HasKey(attachment => attachment.Id);
+            entity.HasIndex(news => news.NewsBodyId, "IX_attachments_NewsBodyId");
         });
     }
 }
