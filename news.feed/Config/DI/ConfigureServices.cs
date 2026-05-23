@@ -27,6 +27,8 @@ public static class ConfigureServices
         services.AddScoped<INewsRepository, NewsRepository>();
         services.AddScoped<ProgramValidator>();
 
+        services.AddScoped<IAttachmentsRepository, AttachmentsRepository>();
+
         services.AddSingleton<IHasher, Hasher>();
         services.AddSingleton<ISecretProvider, SecretProvider>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();

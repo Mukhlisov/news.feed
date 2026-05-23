@@ -6,4 +6,5 @@ public record CreateNewsDto(
     [MinLength(1), MaxLength(Consts.MaxNewsTitleLength)]
     string Title, 
     string Body, 
-    string Program);
+    string Program,
+    List<string> AttachmentUris);

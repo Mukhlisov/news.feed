@@ -29,6 +29,7 @@ public class NewsRepository : INewsRepository
                 Id = Guid.NewGuid(),
                 Program = newsToSave.Program,
                 Title = newsToSave.Title,
+                PreviewUrl = newsToSave.PreviewUrl,
                 BodyId = bodyId,
                 CreationTime = newsToSave.CreationDate,
                 UpdateTime = newsToSave.LastUpdateDate,

@@ -12,10 +12,12 @@ namespace news.feed.Services.News;
 public class NewsService : INewsService
 {
     private readonly INewsRepository _newsRepository;
+    private readonly IAttachmentsRepository _attachmentsRepository;
     
-    public NewsService(INewsRepository newsRepository)
+    public NewsService(INewsRepository newsRepository, IAttachmentsRepository attachmentsRepository)
     {
         _newsRepository = newsRepository;
+        _attachmentsRepository = attachmentsRepository;
     }
 
     public async Task<CreationResult<models.Models.News>> CreateNewsAsync(CreateNewsDto createNewsDto)
@@ -23,6 +25,8 @@ public class NewsService : INewsService
         var news = await _newsRepository
             .CreateNewsAsync(NewsFactory.Create(createNewsDto, AppSettings.MainAuthorId))
             .ConfigureAwait(false);
+        await _attachmentsRepository.BatchCreateAttachmentsAsync(createNewsDto.AttachmentUris, news.BodyId)
+            .ConfigureAwait(true);
         var uri = new UriBuilder(AppSettings.Domain)
             .AppendSegment(createNewsDto.Program)
             .AppendSegment(news.Id)
