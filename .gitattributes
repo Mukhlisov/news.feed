@@ -1,0 +1,38 @@
+# Normalize line endings for all text files
+* text=auto
+
+# Force LF for source code and common text files (recommended for .NET + cross-platform)
+*.cs text eol=lf
+*.csproj text eol=lf
+*.sln text eol=lf
+*.xml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.config text eol=lf
+*.props text eol=lf
+*.targets text eol=lf
+*.editorconfig text eol=lf
+*.gitignore text eol=lf
+*.gitattributes text eol=lf
+
+# Binary files - never normalize
+*.dll binary
+*.exe binary
+*.pdb binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.7z binary
+*.nupkg binary
+*.snupkg binary
+*.ttf binary
+*.eot binary
+*.woff binary
+*.woff2 binary
