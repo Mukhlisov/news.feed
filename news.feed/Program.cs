@@ -1,3 +1,9 @@
-using news.feed;
+namespace news.feed;
 
-Application.Run();
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Application.Run();
+    }
+}
