@@ -114,7 +114,9 @@ public class NewsRepository : INewsRepository
 
     public async Task<NewsBody> GetNewsBodyByIdAsync(Guid id)
     {
-        var newsBody = await _newsFeedContext.NewsBodies.FirstOrDefaultAsync(body => body.Id == id)
+        var newsBody = await _newsFeedContext.NewsBodies
+            .Include(body => body.Attachments)
+            .FirstOrDefaultAsync(body => body.Id == id)
             .ConfigureAwait(false);
         return newsBody ?? throw new DataNotFoundException($"News body with id {id} not found");
     }
