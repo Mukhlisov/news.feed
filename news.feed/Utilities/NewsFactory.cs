@@ -7,11 +7,10 @@ public static class NewsFactory
 {
     public static NewsToSave Create(CreateNewsDto createNewsDto, Guid creatorId)
     {
-        var previewUrl = createNewsDto.AttachmentUris.FirstOrDefault() ?? string.Empty;
         return new NewsToSave(
             createNewsDto.Title,
             createNewsDto.Body,
-            previewUrl,
+            createNewsDto.PreviewUrl,
             createNewsDto.Program,
             DateTime.UtcNow.Ticks,
             DateTime.UtcNow.Ticks,
@@ -25,6 +24,7 @@ public static class NewsFactory
             Id = oldNews.Id,
             Title = updateNewsDto.Title,
             Program = oldNews.Program,
+            PreviewUrl = updateNewsDto.PreviewUrl,
             BodyId = oldNews.BodyId,
             CreationTime = oldNews.CreationTime,
             UpdateTime = DateTime.UtcNow.Ticks,

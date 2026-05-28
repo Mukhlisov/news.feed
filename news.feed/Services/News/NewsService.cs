@@ -25,8 +25,11 @@ public class NewsService : INewsService
         var news = await _newsRepository
             .CreateNewsAsync(NewsFactory.Create(createNewsDto, AppSettings.MainAuthorId))
             .ConfigureAwait(false);
-        await _attachmentsRepository.BatchCreateAttachmentsAsync(createNewsDto.AttachmentUris, news.BodyId)
+
+        var attachmentsToCreate = createNewsDto.AttachmentUris.Select(dto => dto.AttachmentUrl).ToList();
+        await _attachmentsRepository.BatchCreateAttachmentsAsync(attachmentsToCreate, news.BodyId)
             .ConfigureAwait(true);
+
         var uri = new UriBuilder(AppSettings.Domain)
             .AppendSegment(createNewsDto.Program)
             .AppendSegment(news.Id)
@@ -43,20 +46,32 @@ public class NewsService : INewsService
             Id = news.BodyId,
             Body = updateNewsDto.Body
         }).ConfigureAwait(false);
+
         var updatedNews = NewsFactory.Create(news, updateNewsDto);
         var isNewsUpdated = await _newsRepository.UpdateNewsAsync(updatedNews)
             .ConfigureAwait(false);
 
         if (!isNewsBodyUpdated || !isNewsUpdated)
             throw new FailToModifyDataException($"Failed to update news: newsId = {news.Id}, bodyId = {news.BodyId}");
+
+        var attachmentsToCreate = updateNewsDto.Attachments
+            .Where(attachment => !attachment.Id.HasValue)
+            .Select(attachment => attachment.AttachmentUrl)
+            .ToList();
+
+        await _attachmentsRepository.BatchCreateAttachmentsAsync(attachmentsToCreate, news.BodyId).ConfigureAwait(true);
+
         var uri = new UriBuilder(AppSettings.Domain)
             .AppendSegment(news.Program)
             .AppendSegment(news.Id)
             .BuildHttps();
+
         return new CreationResult<models.Models.News>(uri, updatedNews);
     }
 
-    public async Task<IEnumerable<models.Models.News>> BatchGetNewsAsync(int skip, int take = Consts.DefaultNewsBatchSize)
+    public async Task<IEnumerable<models.Models.News>> BatchGetNewsAsync(
+        int skip, 
+        int take = Consts.DefaultNewsBatchSize)
     {
         return await _newsRepository.BatchGetNewsAsync(skip, take).ConfigureAwait(false);
     }
@@ -72,8 +87,6 @@ public class NewsService : INewsService
     public async Task<NewsBody> GetNewsBodyByIdAsync(Guid id) =>
         await _newsRepository.GetNewsBodyByIdAsync(id).ConfigureAwait(false);
 
-    public async Task DeleteNewsAsync(Guid id)
-    {
+    public async Task DeleteNewsAsync(Guid id) => 
         await _newsRepository.DeleteNewsAsync(id).ConfigureAwait(false);
-    }
 }

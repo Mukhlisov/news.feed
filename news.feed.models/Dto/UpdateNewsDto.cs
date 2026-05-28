@@ -6,4 +6,6 @@ public record UpdateNewsDto(
     Guid Id,
     [MinLength(1), MaxLength(Consts.MaxNewsTitleLength)]
     string Title, 
-    string Body);
+    string PreviewUrl,
+    string Body,
+    List<AttachmentsDto> Attachments);
