@@ -24,7 +24,8 @@ public static class ConfigurationExtensions
             {
                 policyBuilder
                     .WithOrigins(site, adminPanel)
-                    .WithMethods("GET");
+                    .WithMethods("GET")
+                    .AllowAnyHeader();
             });
         });
     }
@@ -48,7 +49,7 @@ public static class ConfigurationExtensions
     private static (string, string) GetUrisForCorsPolicy()
     {
 #if DEBUG
-        var adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttp().GetLeftPart(UriPartial.Authority);
+        var adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttp().GetLeftPart(UriPartial.Authority); // Пробовал ToString, нет разницы, CORS все равно ругается
         var site = new UriBuilder(AppSettings.Domain).BuildHttp().GetLeftPart(UriPartial.Authority);
 #else
         var adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttps().GetLeftPart(UriPartial.Authority);

@@ -10,6 +10,7 @@
       <env name="CONNECTION_STRING" value="Host=localhost;Port=5432;Database=news-feed;Username=postgres;Password=1234;" />
       <env name="PASSWORD_HASH" value="$2a$11$WmXfZIJK8jG2N7I94nOvLObE6czxLQEHW6uTqZCnj8.E.JjaaIX9O" />
       <env name="SITE_DOMAIN" value="localhost:3000" />
+      <env name="ADMIN_PANEL_DOMAIN" value="localhost:3000" />
     </envs>
     <option name="ENV_FILE_PATHS" value="" />
     <option name="REDIRECT_INPUT_PATH" value="" />

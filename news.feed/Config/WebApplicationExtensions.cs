@@ -1,6 +1,5 @@
 using news.feed.Config.EntityFramework;
 using news.feed.Config.Settings;
-using news.feed.models.Policies;
 
 namespace news.feed.Config;
 
@@ -11,8 +10,7 @@ public static class WebApplicationExtensions
         app.UseForwardedHeaders();
         app.UseRouting();
 
-        app.UseCors(nameof(Policies.AdminPanelPolicy));
-        app.UseCors(nameof(Policies.GetNewsPolicy));
+        app.UseCors();
         app.UseRateLimiter();
 
         app.MapControllers();
