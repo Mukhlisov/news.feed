@@ -7,6 +7,7 @@ using news.feed.Repository;
 using news.feed.Services.Auth;
 using news.feed.Services.Hashing;
 using news.feed.Services.News;
+using news.feed.Services.Programs;
 
 namespace news.feed.Config.DI;
 
@@ -28,6 +29,9 @@ public static class ConfigureServices
         services.AddScoped<ProgramValidator>();
 
         services.AddScoped<IAttachmentsRepository, AttachmentsRepository>();
+
+        services.AddScoped<IProgramsRepository, ProgramsRepository>();
+        services.AddScoped<IProgramsService, ProgramsService>();
 
         services.AddSingleton<IHasher, Hasher>();
         services.AddSingleton<ISecretProvider, SecretProvider>();
