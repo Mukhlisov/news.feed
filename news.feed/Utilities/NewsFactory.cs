@@ -10,7 +10,7 @@ public static class NewsFactory
         return new NewsToSave(
             createNewsDto.Title,
             createNewsDto.Body,
-            createNewsDto.PreviewUrl,
+            createNewsDto.PreviewUrl ?? string.Empty,
             createNewsDto.Program,
             DateTime.UtcNow.Ticks,
             DateTime.UtcNow.Ticks,

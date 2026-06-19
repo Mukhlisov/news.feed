@@ -7,7 +7,7 @@ public record CreateNewsDto(
     [MaxLength(Consts.MaxNewsTitleLength)]
     [NotWhiteSpace]
     string Title, 
-    string PreviewUrl,
+    string? PreviewUrl,
     string Body, 
     string Program,
     List<AttachmentsDto> AttachmentUris);
