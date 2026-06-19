@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using news.feed.Auth;
 using news.feed.models.Dto.Auth;
 using news.feed.models.Policies;
 using news.feed.Services.Auth;
@@ -41,4 +42,9 @@ public class AuthController : ApiControllerBase<AuthController>
             return HandleHttpError(ex);
         }
     }
+
+    [EnableCors(nameof(Policies.AdminPanelPolicy))]
+    [Auth]
+    [HttpPost("check")]
+    public IActionResult Check() => Ok(new { Authenticated = true });
 }
