@@ -34,7 +34,7 @@ public static class ConfigurationExtensions
     {
         builder.WebHost.ConfigureKestrel(options =>
         {
-            options.ListenLocalhost(5000);
+            options.ListenAnyIP(5000);
             options.Limits.KeepAliveTimeout = AppSettings.Kestrel.KeepAliveTimeout;
             options.Limits.MaxRequestBodySize = AppSettings.Kestrel.MaxRequestBodySize;
             options.Limits.MinResponseDataRate = new MinDataRate(
