@@ -37,6 +37,7 @@ public class NewsFeedContext : DbContext
             entity.Property(news => news.UpdateTime)
                 .IsRequired();
             entity.HasIndex(news => news.Program, "IX_news_Program");
+            entity.HasIndex(news => news.CreationTime, "IX_news_CreationTime");
         });
         modelBuilder.Entity<NewsBody>(entity =>
         {

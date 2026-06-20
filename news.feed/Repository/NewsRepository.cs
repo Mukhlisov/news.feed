@@ -91,6 +91,7 @@ public class NewsRepository : INewsRepository
 
     public async Task<IEnumerable<News>> BatchGetNewsAsync(int skip = 0, int take = Consts.DefaultNewsBatchSize) =>
         await _newsFeedContext.News
+            .OrderByDescending(news => news.CreationTime)
             .Skip(skip)
             .Take(take)
             .ToListAsync().ConfigureAwait(false);
@@ -102,6 +103,7 @@ public class NewsRepository : INewsRepository
     {
         return await _newsFeedContext.News
             .Where(news => news.Program.Equals(program))
+            .OrderByDescending(news => news.CreationTime)
             .Skip(skip)
             .Take(take)
             .ToListAsync().ConfigureAwait(false);
