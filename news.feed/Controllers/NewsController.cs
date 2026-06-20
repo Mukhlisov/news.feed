@@ -58,6 +58,21 @@ public class NewsController : ApiControllerBase<NewsController>
     }
 
     [EnableCors(nameof(Policies.GetNewsPolicy))]
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<NewsDto>> GetNewsById(Guid id)
+    {
+        try
+        {
+            var newsDto = await _newsService.GetNewsByIdAsync(id).ConfigureAwait(false);
+            return Ok(newsDto);
+        }
+        catch (Exception ex)
+        {
+            return HandleHttpError(ex);
+        }
+    }
+
+    [EnableCors(nameof(Policies.GetNewsPolicy))]
     [HttpGet("body/{id:guid}")]
     public async Task<ActionResult<NewsBody>> GetNewsBodyById(Guid id)
     {

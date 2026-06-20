@@ -82,6 +82,13 @@ public class NewsService : INewsService
         return await _newsRepository.BatchGetNewsFromSpecifiedProgramAsync(program, skip, take).ConfigureAwait(false);
     }
 
+    public async Task<NewsDto?> GetNewsByIdAsync(Guid id)
+    {
+        var news = await _newsRepository.GetNewsByIdAsync(id).ConfigureAwait(false);
+        var body = await GetNewsBodyByIdAsync(news.BodyId).ConfigureAwait(false);
+        return MapToDto(news, body);
+    }
+
     public async Task<NewsBody> GetNewsBodyByIdAsync(Guid id) =>
         await _newsRepository.GetNewsBodyByIdAsync(id).ConfigureAwait(false);
 
@@ -93,5 +100,21 @@ public class NewsService : INewsService
         if (attachmentsToSave?.Count > 0)
             await _attachmentsRepository.BatchCreateAttachmentsAsync(attachmentsToSave, bodyId)
                 .ConfigureAwait(true);
+    }
+
+    private static NewsDto MapToDto(models.Models.News news, NewsBody body)
+    {
+        return new NewsDto
+        {
+            Id = news.Id,
+            Program = news.Program,
+            Title = news.Title,
+            PreviewUrl = news.PreviewUrl,
+            CreationTime = news.CreationTime,
+            UpdateTime = news.UpdateTime,
+            AuthorId = news.AuthorId,
+            Body = body.Body,
+            AttachmentsUris = body.Attachments.Select(a => a.AttachmentUrl).ToList()
+        };
     }
 }

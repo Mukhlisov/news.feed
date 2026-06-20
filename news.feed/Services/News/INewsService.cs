@@ -10,6 +10,7 @@ public interface INewsService
     Task<CreationResult<models.Models.News>> UpdateNewsAsync(UpdateNewsDto updateNewsDto);
     Task<IEnumerable<models.Models.News>> BatchGetNewsAsync(int skip, int take = Consts.DefaultNewsBatchSize);
     Task<IEnumerable<models.Models.News>> BatchGetNewsFromSpecifiedProgramAsync(string program, int skip = 0, int take = Consts.DefaultNewsBatchSize);
+    Task<NewsDto?> GetNewsByIdAsync(Guid id);
     Task<NewsBody> GetNewsBodyByIdAsync(Guid id);
     Task DeleteNewsAsync(Guid id);
 }
