@@ -24,7 +24,7 @@ public static class NewsFactory
             Id = oldNews.Id,
             Title = updateNewsDto.Title,
             Program = oldNews.Program,
-            PreviewUrl = updateNewsDto.PreviewUrl,
+            PreviewUrl = updateNewsDto.PreviewUrl ?? string.Empty,
             BodyId = oldNews.BodyId,
             CreationTime = oldNews.CreationTime,
             UpdateTime = DateTime.UtcNow.Ticks,

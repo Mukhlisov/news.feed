@@ -26,9 +26,8 @@ public class NewsService : INewsService
             .CreateNewsAsync(NewsFactory.Create(createNewsDto, AppSettings.MainAuthorId))
             .ConfigureAwait(false);
 
-        var attachmentsToCreate = createNewsDto.AttachmentUris.Select(dto => dto.AttachmentUrl).ToList();
-        await _attachmentsRepository.BatchCreateAttachmentsAsync(attachmentsToCreate, news.BodyId)
-            .ConfigureAwait(true);
+        var attachmentsToSave = createNewsDto.AttachmentUris?.Select(dto => dto.AttachmentUrl).ToList();
+        await SaveAttachmentsIfNeeded(attachmentsToSave, news.BodyId).ConfigureAwait(false);
 
         var uri = new UriBuilder(AppSettings.Domain)
             .AppendSegment(createNewsDto.Program)
@@ -54,12 +53,11 @@ public class NewsService : INewsService
         if (!isNewsBodyUpdated || !isNewsUpdated)
             throw new FailToModifyDataException($"Failed to update news: newsId = {news.Id}, bodyId = {news.BodyId}");
 
-        var attachmentsToCreate = updateNewsDto.Attachments
+        var attachmentsToSave = updateNewsDto.Attachments?
             .Where(attachment => !attachment.Id.HasValue)
             .Select(attachment => attachment.AttachmentUrl)
             .ToList();
-
-        await _attachmentsRepository.BatchCreateAttachmentsAsync(attachmentsToCreate, news.BodyId).ConfigureAwait(true);
+        await SaveAttachmentsIfNeeded(attachmentsToSave, news.BodyId).ConfigureAwait(false);
 
         var uri = new UriBuilder(AppSettings.Domain)
             .AppendSegment(news.Program)
@@ -89,4 +87,11 @@ public class NewsService : INewsService
 
     public async Task DeleteNewsAsync(Guid id) => 
         await _newsRepository.DeleteNewsAsync(id).ConfigureAwait(false);
+
+    private async Task SaveAttachmentsIfNeeded(List<string>? attachmentsToSave, Guid bodyId)
+    {
+        if (attachmentsToSave?.Count > 0)
+            await _attachmentsRepository.BatchCreateAttachmentsAsync(attachmentsToSave, bodyId)
+                .ConfigureAwait(true);
+    }
 }

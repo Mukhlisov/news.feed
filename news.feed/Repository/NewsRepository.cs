@@ -55,6 +55,7 @@ public class NewsRepository : INewsRepository
                 .Where(n => n.Id == news.Id)
                 .ExecuteUpdateAsync(s => s
                     .SetProperty(n => n.Title, news.Title)
+                    .SetProperty(n => n.PreviewUrl, news.PreviewUrl)
                     .SetProperty(n => n.UpdateTime, news.UpdateTime))
                 .ConfigureAwait(false);
             await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);

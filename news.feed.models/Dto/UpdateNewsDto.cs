@@ -8,6 +8,6 @@ public record UpdateNewsDto(
     [MaxLength(Consts.MaxNewsTitleLength)]
     [NotWhiteSpace]
     string Title, 
-    string PreviewUrl,
+    string? PreviewUrl,
     string Body,
-    List<AttachmentsDto> Attachments);
+    List<AttachmentsDto>? Attachments);
