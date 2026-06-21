@@ -1,0 +1,25 @@
+# Dockerfile.migrations
+# Dedicated image for running EF Core migrations against PostgreSQL.
+# This image is meant to be run as a one-off job in the same Docker network as the postgres container.
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
+WORKDIR /src
+
+COPY news.feed.sln .
+COPY news.feed/news.feed.csproj news.feed/
+COPY news.feed.models/news.feed.models.csproj news.feed.models/
+COPY configuration.core/configuration.core.csproj configuration.core/
+COPY extra/extra.csproj extra/
+COPY news.feed.Tests/news.feed.Tests.csproj news.feed.Tests/
+
+RUN dotnet restore "news.feed.sln"
+
+COPY . .
+
+RUN dotnet tool install --global dotnet-ef --version 9.*
+
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+WORKDIR /src/news.feed
+
+ENTRYPOINT ["dotnet-ef", "database", "update", "--no-build", "--project", "/src/news.feed/news.feed.csproj"]
