@@ -1,0 +1,41 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vs
+.vscode
+.idea
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+out/
+publish/
+
+# Test projects (not needed for production image)
+news.feed.Tests/
+UnitTests/
+**/*Tests/
+
+# Documentation and misc
+*.md
+Dockerfile*
+docker-compose*
+.dockerignore
+LICENSE
+README*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+*.tmp
+.env
+.env.*
