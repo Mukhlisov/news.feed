@@ -6,16 +6,19 @@ COPY news.feed/news.feed.csproj news.feed/
 COPY news.feed.models/news.feed.models.csproj news.feed.models/
 COPY configuration.core/configuration.core.csproj configuration.core/
 COPY extra/extra.csproj extra/
+COPY news.feed.Tests/news.feed.Tests.csproj news.feed.Tests/
 
-RUN dotnet restore "news.feed/news.feed.csproj"
+RUN dotnet restore "news.feed.sln"
 
 COPY . .
 
 WORKDIR /src/news.feed
+ 
+RUN dotnet restore "news.feed.csproj"
+
 RUN dotnet publish "news.feed.csproj" \
     -c Release \
     -o /app/publish \
-    --no-restore \
     /p:UseAppHost=false \
     /p:PublishTrimmed=false
 
@@ -30,8 +33,7 @@ COPY --from=build /app/publish .
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV DOTNET_RUNNING_IN_CONTAINER=true
 
-# The application listens on port 8080 when running in a container
-# (see ConfigureKestrel in ConfigurationExtensions.cs)
+
 EXPOSE 8080
 
 USER appuser

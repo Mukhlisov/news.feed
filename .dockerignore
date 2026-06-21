@@ -17,11 +17,6 @@ obj/
 out/
 publish/
 
-# Test projects (not needed for production image)
-news.feed.Tests/
-UnitTests/
-**/*Tests/
-
 # Documentation and misc
 *.md
 Dockerfile*
