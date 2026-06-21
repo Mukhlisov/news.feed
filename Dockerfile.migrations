@@ -22,4 +22,6 @@ ENV PATH="$PATH:/root/.dotnet/tools"
 
 WORKDIR /src/news.feed
 
-ENTRYPOINT ["dotnet-ef", "database", "update", "--no-build", "--project", "/src/news.feed/news.feed.csproj"]
+# Shell wrapper to properly expand the CONNECTION_STRING env var.
+# Pass the connection string via environment variable CONNECTION_STRING.
+ENTRYPOINT ["sh", "-c", "dotnet-ef database update --no-build --project /src/news.feed/news.feed.csproj --connection \"${CONNECTION_STRING}\""]
