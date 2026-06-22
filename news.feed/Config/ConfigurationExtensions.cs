@@ -8,6 +8,8 @@ namespace news.feed.Config;
 
 public static class ConfigurationExtensions
 {
+    private static bool IsInContainer => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+
     public static void ConfigureCors(this WebApplicationBuilder builder)
     {
         builder.Services.AddCors(options =>
@@ -32,9 +34,11 @@ public static class ConfigurationExtensions
 
     public static void ConfigureKestrel(this WebApplicationBuilder builder)
     {
+
+        var port = IsInContainer ? 8080 : 5000;
         builder.WebHost.ConfigureKestrel(options =>
         {
-            options.ListenAnyIP(5000);
+            options.ListenAnyIP(port);
             options.Limits.KeepAliveTimeout = AppSettings.Kestrel.KeepAliveTimeout;
             options.Limits.MaxRequestBodySize = AppSettings.Kestrel.MaxRequestBodySize;
             options.Limits.MinResponseDataRate = new MinDataRate(
@@ -48,13 +52,18 @@ public static class ConfigurationExtensions
 
     private static (string, string) GetUrisForCorsPolicy()
     {
-#if DEBUG
-        var adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttp().GetLeftPart(UriPartial.Authority);
-        var site = new UriBuilder(AppSettings.Domain).BuildHttp().GetLeftPart(UriPartial.Authority);
-#else
-        var adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttps().GetLeftPart(UriPartial.Authority);
-        var site = new UriBuilder(AppSettings.Domain).BuildHttps().GetLeftPart(UriPartial.Authority);
-#endif
+        string adminPanel;
+        string site;
+        if (IsInContainer)
+        {
+            adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttps().GetLeftPart(UriPartial.Authority);
+            site = new UriBuilder(AppSettings.Domain).BuildHttps().GetLeftPart(UriPartial.Authority);
+        }
+        else{
+            adminPanel = new UriBuilder(AppSettings.AdminPanelDomain).BuildHttp().GetLeftPart(UriPartial.Authority);
+            site = new UriBuilder(AppSettings.Domain).BuildHttp().GetLeftPart(UriPartial.Authority);
+        }
+
         return (adminPanel, site);
     }
 }
