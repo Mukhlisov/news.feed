@@ -13,4 +13,5 @@ public interface INewsService
     Task<NewsDto?> GetNewsByIdAsync(Guid id);
     Task<NewsBody> GetNewsBodyByIdAsync(Guid id);
     Task DeleteNewsAsync(Guid id);
+    Task<CreationResult<models.Models.News>> ChangeNewsProgramAsync(ChangeNewsProgramDto changeNewsProgramDto);
 }

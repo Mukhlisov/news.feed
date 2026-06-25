@@ -95,6 +95,25 @@ public class NewsService : INewsService
     public async Task DeleteNewsAsync(Guid id) => 
         await _newsRepository.DeleteNewsAsync(id).ConfigureAwait(false);
 
+    public async Task<CreationResult<models.Models.News>> ChangeNewsProgramAsync(ChangeNewsProgramDto changeNewsProgramDto)
+    {
+        var news = await _newsRepository.GetNewsByIdAsync(changeNewsProgramDto.NewsId).ConfigureAwait(false);
+        var uri = new UriBuilder(AppSettings.Domain)
+            .AppendSegment(changeNewsProgramDto.Program)
+            .AppendSegment(news.Id)
+            .BuildHttps();
+
+        if (news.Program.Equals(changeNewsProgramDto.Program, StringComparison.InvariantCultureIgnoreCase))
+            return new CreationResult<models.Models.News>(uri, news);
+
+        news.Program = changeNewsProgramDto.Program;
+        var isNewsUpdated = await _newsRepository.ChangeProgramAsync(news).ConfigureAwait(false);
+        if (!isNewsUpdated)
+            throw new FailToModifyDataException($"Failed to update news: newsId = {news.Id}");
+
+        return new CreationResult<models.Models.News>(uri, news);
+    }
+
     private async Task SaveAttachmentsIfNeeded(List<string>? attachmentsToSave, Guid bodyId)
     {
         if (attachmentsToSave?.Count > 0)

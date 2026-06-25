@@ -14,4 +14,5 @@ public interface INewsRepository
     Task<News> GetNewsByIdAsync(Guid id);
     Task<NewsBody> GetNewsBodyByIdAsync(Guid id);
     Task DeleteNewsAsync(Guid id);
+    Task<bool> ChangeProgramAsync(News news);
 }

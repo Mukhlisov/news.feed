@@ -10,6 +10,7 @@ public sealed class ProgramValidationAttribute : ValidationAttribute
     {
         string program => ValidateStringValue(program, validationContext),
         CreateNewsDto saveNewsDto => ValidateStringValue(saveNewsDto.Program, validationContext),
+        ChangeNewsProgramDto changeNewsProgramDto => ValidateStringValue(changeNewsProgramDto.Program, validationContext),
         null => new ValidationResult("Input data is required"),
         _ => new ValidationResult("Unsupported data type")
     };

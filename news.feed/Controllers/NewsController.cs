@@ -134,5 +134,21 @@ public class NewsController : ApiControllerBase<NewsController>
             return HandleHttpError(ex);
         }
     }
+
+    [Auth]
+    [EnableCors(nameof(Policies.AdminPanelPolicy))]
+    [HttpPatch("change-program")]
+    public async Task<ActionResult> ChangeProgram([ProgramValidation] ChangeNewsProgramDto changeNewsProgramDto)
+    {
+        try
+        {
+            var changeResult = await _newsService.ChangeNewsProgramAsync(changeNewsProgramDto).ConfigureAwait(false);
+            return Created(changeResult.Uri, changeResult.Result);
+        }
+        catch (Exception ex)
+        {
+            return HandleHttpError(ex);
+        }
+    }
     // TODO search by news title (fuzzy match)
 }

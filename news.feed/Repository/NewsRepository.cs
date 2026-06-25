@@ -152,4 +152,23 @@ public class NewsRepository : INewsRepository
             throw new FailToModifyDataException($"Failed to delete news with id {id}");
         }
     }
+
+    public async Task<bool> ChangeProgramAsync(News news)
+    {
+        await using var transaction = await _newsFeedContext.Database.BeginTransactionAsync();
+        try
+        {
+            var updated = await _newsFeedContext.News
+                .Where(n => n.Id == news.Id)
+                .ExecuteUpdateAsync(s => s.SetProperty(n => n.Program, news.Program)).ConfigureAwait(false);
+            await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
+            await transaction.CommitAsync().ConfigureAwait(false);
+            return updated > 0;
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw new FailToModifyDataException($"Failed to update news with id {news.Id}");
+        }
+    }
 }
