@@ -6,9 +6,6 @@ using Xunit;
 
 namespace news.feed.Tests.Api;
 
-/// <summary>
-/// Tests for deleting individual attachments (scenario #5).
-/// </summary>
 [Collection("NewsFeed API Collection")]
 public class AttachmentDeletionTests : IAsyncLifetime
 {
@@ -32,7 +29,6 @@ public class AttachmentDeletionTests : IAsyncLifetime
     [Fact]
     public async Task DeleteAttachments_RemovesThemFromNewsBody()
     {
-        // Create news with 3 attachments
         var createDto = new CreateNewsDto(
             "News with attachments to delete",
             "",

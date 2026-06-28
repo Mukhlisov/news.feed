@@ -6,9 +6,6 @@ using Xunit;
 
 namespace news.feed.Tests.Api;
 
-/// <summary>
-/// Tests for full news deletion with cascade (scenario #4).
-/// </summary>
 [Collection("NewsFeed API Collection")]
 public class NewsDeletionTests : IAsyncLifetime
 {

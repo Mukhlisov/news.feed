@@ -3,10 +3,6 @@ using Respawn.Graph;
 
 namespace news.feed.Tests.Api;
 
-/// <summary>
-/// Helper for reliable and fast database state management in integration/API tests.
-/// Uses Respawn to truncate data while keeping the schema.
-/// </summary>
 public static class TestDatabaseHelper
 {
     private static Respawner? _respawner;
@@ -21,19 +17,16 @@ public static class TestDatabaseHelper
         await using var connection = factory.GetDbConnection();
         await connection.OpenAsync();
 
-        if (_respawner is null)
+        _respawner ??= await Respawner.CreateAsync(connection, new RespawnerOptions
         {
-            _respawner = await Respawner.CreateAsync(connection, new RespawnerOptions
+            DbAdapter = DbAdapter.Postgres,
+            SchemasToInclude = new[] { "public" },
+            // We do not want to delete the seeded programs on every test reset.
+            TablesToIgnore = new[]
             {
-                DbAdapter = DbAdapter.Postgres,
-                SchemasToInclude = new[] { "public" },
-                // We do not want to delete the seeded programs on every test reset.
-                TablesToIgnore = new[]
-                {
-                    new Table("public", "news_program")
-                }
-            });
-        }
+                new Table("public", "news_program")
+            }
+        });
 
         await _respawner.ResetAsync(connection);
     }

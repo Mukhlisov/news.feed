@@ -6,10 +6,6 @@ using Xunit;
 
 namespace news.feed.Tests.Api;
 
-/// <summary>
-/// Smoke / contract tests for the public (no authentication required) news endpoints.
-/// These tests validate basic happy paths and error handling for unauthenticated clients.
-/// </summary>
 [Collection("NewsFeed API Collection")]
 public class PublicNewsEndpointsTests : IAsyncLifetime
 {

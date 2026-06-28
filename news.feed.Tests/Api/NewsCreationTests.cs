@@ -6,9 +6,6 @@ using Xunit;
 
 namespace news.feed.Tests.Api;
 
-/// <summary>
-/// Tests for news creation scenarios (scenario #2 from scenarios.txt).
-/// </summary>
 [Collection("NewsFeed API Collection")]
 public class NewsCreationTests : IAsyncLifetime
 {

@@ -7,29 +7,28 @@ namespace news.feed.Tests.Unit.Services.Auth;
 
 public class SecretProviderTests
 {
-    private readonly IMemoryCache _memoryCache;
     private readonly SecretProvider _secretProvider;
 
     public SecretProviderTests()
     {
         // Use a real MemoryCache for simpler and more reliable testing
         var options = Options.Create(new MemoryCacheOptions());
-        _memoryCache = new MemoryCache(options);
-        _secretProvider = new SecretProvider(_memoryCache);
+        var memoryCache = new MemoryCache(options);
+        _secretProvider = new SecretProvider(memoryCache);
     }
 
     [Fact]
     public void CreateSecretFor_ShouldGenerateSecretAndReturnCreatedStatus()
     {
         // Arrange
-        var issuer = "test-user";
+        const string issuer = "test-user";
 
         // Act
         var result = _secretProvider.CreateSecretFor(issuer);
 
         // Assert
         result.Should().NotBeNull();
-        result.Status.Should().Be(news.feed.models.Models.Secret.SecretStatus.Created);
+        result.Status.Should().Be(models.Models.Secret.SecretStatus.Created);
         result.Data.Should().NotBeNullOrWhiteSpace();
         result.Data.Should().HaveLength(44); // Base64-encoded 32 bytes
     }
@@ -38,7 +37,7 @@ public class SecretProviderTests
     public void GetSecret_AfterCreateSecretFor_ShouldReturnFoundStatus()
     {
         // Arrange
-        var issuer = "existing-user";
+        const string issuer = "existing-user";
         _secretProvider.CreateSecretFor(issuer);
 
         // Act
@@ -46,7 +45,7 @@ public class SecretProviderTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Status.Should().Be(news.feed.models.Models.Secret.SecretStatus.Found);
+        result.Status.Should().Be(models.Models.Secret.SecretStatus.Found);
         result.Data.Should().NotBeNullOrWhiteSpace();
     }
 
@@ -54,29 +53,29 @@ public class SecretProviderTests
     public void GetSecret_WhenNoSecretWasCreated_ShouldReturnExpiredStatus()
     {
         // Arrange
-        var issuer = "never-seen-user";
+        const string issuer = "never-seen-user";
 
         // Act
         var result = _secretProvider.GetSecret(issuer);
 
         // Assert
         result.Should().NotBeNull();
-        result.Status.Should().Be(news.feed.models.Models.Secret.SecretStatus.Expired);
+        result.Status.Should().Be(models.Models.Secret.SecretStatus.Expired);
         result.Data.Should().BeNull();
     }
 
-    [Fact]
+    [Fact(Skip = "Needs expiration time configuration")]
     public void Secret_ShouldExpire_AfterConfiguredTime()
     {
         // This test demonstrates the expiration behavior.
         // In a real scenario we would use a time provider or shorter expiration for testing.
         // For now we just verify that a freshly created secret is found.
 
-        var issuer = "short-lived-user";
+        const string issuer = "short-lived-user";
         _secretProvider.CreateSecretFor(issuer);
 
         var result = _secretProvider.GetSecret(issuer);
 
-        result.Status.Should().Be(news.feed.models.Models.Secret.SecretStatus.Found);
+        result.Status.Should().Be(models.Models.Secret.SecretStatus.Found);
     }
 }

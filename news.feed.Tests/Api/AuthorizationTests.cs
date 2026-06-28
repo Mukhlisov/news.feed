@@ -7,10 +7,6 @@ using Xunit;
 
 namespace news.feed.Tests.Api;
 
-/// <summary>
-/// Tests for authentication and authorization behavior.
-/// Covers scenario #1 from scenarios.txt.
-/// </summary>
 [Collection("NewsFeed API Collection")]
 public class AuthorizationTests : IAsyncLifetime
 {
