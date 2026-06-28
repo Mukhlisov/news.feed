@@ -23,7 +23,7 @@ public class NewsFeedApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     public NewsFeedApiFactory()
     {
         _postgresContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:16-alpine")
+            .WithImage("postgres:17-alpine")
             .WithDatabase("newsfeed_test")
             .WithUsername("test")
             .WithPassword("test")
@@ -49,7 +49,8 @@ public class NewsFeedApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         //
         // These values will be picked up by PostgresSettingsStorage, AppSettings, AuthSettings etc.
         Environment.SetEnvironmentVariable("CONNECTION_STRING", ConnectionString);
-        Environment.SetEnvironmentVariable("SITE_DOMAIN", "http://localhost:5000");
+        Environment.SetEnvironmentVariable("SITE_DOMAIN", "localhost:3000");
+        Environment.SetEnvironmentVariable("ADMIN_PANEL_DOMAIN", "localhost:3001");
         Environment.SetEnvironmentVariable("AUTHOR_ID", Guid.NewGuid().ToString());
 
         // Test admin user for authentication in tests
