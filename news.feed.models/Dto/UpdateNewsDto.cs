@@ -10,4 +10,4 @@ public record UpdateNewsDto(
     string Title, 
     string? PreviewUrl,
     string Body,
-    List<AttachmentsDto>? Attachments);
+    List<AttachmentsDto>? Attachments = null);

@@ -10,4 +10,4 @@ public record CreateNewsDto(
     string? PreviewUrl,
     string Body, 
     string Program,
-    List<AttachmentsDto>? AttachmentUris);
+    List<AttachmentsDto>? AttachmentUris = null);
