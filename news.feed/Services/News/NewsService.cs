@@ -95,7 +95,8 @@ public class NewsService : INewsService
     public async Task DeleteNewsAsync(Guid id) => 
         await _newsRepository.DeleteNewsAsync(id).ConfigureAwait(false);
 
-    public async Task<CreationResult<models.Models.News>> ChangeNewsProgramAsync(ChangeNewsProgramDto changeNewsProgramDto)
+    public async Task<CreationResult<models.Models.News>> ChangeNewsProgramAsync(
+        ChangeNewsProgramDto changeNewsProgramDto)
     {
         var news = await _newsRepository.GetNewsByIdAsync(changeNewsProgramDto.NewsId).ConfigureAwait(false);
         var uri = new UriBuilder(AppSettings.Domain)
