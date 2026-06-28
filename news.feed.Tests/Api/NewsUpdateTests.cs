@@ -30,10 +30,10 @@ public class NewsUpdateTests : IAsyncLifetime
     public async Task UpdateNews_WithEmptyTitle_ReturnsBadRequest()
     {
         // First create a valid news
-        var createDto = new CreateNewsDto("Original title", "", "Original body", "patronage", new List<AttachmentsDto>());
+        var createDto = new CreateNewsDto("Original title", "", "Original body", "patronage");
         var (_, created) = await _client.CreateNewsAsync(createDto);
 
-        var updateDto = new UpdateNewsDto(created!.Id, "", "", "New body", new List<AttachmentsDto>());
+        var updateDto = new UpdateNewsDto(created!.Id, "", "", "New body");
 
         var status = await _client.UpdateNewsAsync(updateDto);
 
@@ -70,5 +70,25 @@ public class NewsUpdateTests : IAsyncLifetime
         body!.Body.Should().Be("Completely new body text");
         body.Attachments.Should().HaveCount(2); // 1 old + 1 new
         body.Attachments.Any(a => a.AttachmentUrl == "https://new.com/extra.pdf").Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ChangeNewsProgram_ShouldActuallyChangeProgram()
+    {
+        var createDto = new CreateNewsDto(
+            "Original title",
+            "",
+            "Original body",
+            "patronage");
+
+        var (_, created) = await _client.CreateNewsAsync(createDto);
+
+        var changeNewsProgramDto = new ChangeNewsProgramDto(created!.Id, "baby-walk");
+
+        var status = await _client.ChangeNewsProgramAsync(changeNewsProgramDto);
+        status.Should().Be(HttpStatusCode.Created);
+
+        var (_, updated) = await _client.GetNewsByIdAsync(created.Id);
+        updated.Program.Should().Be("baby-walk");
     }
 }

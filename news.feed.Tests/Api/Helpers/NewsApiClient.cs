@@ -20,54 +20,51 @@ public class NewsApiClient
 
     // ==================== News ====================
 
-    public async Task<HttpResponseMessage> CreateNewsRawAsync(CreateNewsDto dto)
-    {
-        return await _client.PostAsJsonAsync("/api/v1/news", dto);
-    }
-
     public async Task<(HttpStatusCode Status, News? Result)> CreateNewsAsync(CreateNewsDto dto)
     {
-        var response = await CreateNewsRawAsync(dto);
-        if (response.IsSuccessStatusCode)
-        {
-            // The controller returns Created(..., result.Result) so the body is the News directly
-            var news = await response.Content.ReadFromJsonAsync<News>();
-            return (response.StatusCode, news);
-        }
-        return (response.StatusCode, null);
+        var response = await _client.PostAsJsonAsync("/api/v1/news", dto);
+        if (!response.IsSuccessStatusCode) 
+            return (response.StatusCode, null);
+        // The controller returns Created(..., result.Result) so the body is the News directly
+        var news = await response.Content.ReadFromJsonAsync<News>();
+        return (response.StatusCode, news);
     }
 
-    public async Task<HttpResponseMessage> UpdateNewsRawAsync(UpdateNewsDto dto)
-    {
-        return await _client.PatchAsJsonAsync("/api/v1/news", dto);
-    }
 
     public async Task<HttpStatusCode> UpdateNewsAsync(UpdateNewsDto dto)
     {
-        var response = await UpdateNewsRawAsync(dto);
+        var response = await _client.PatchAsJsonAsync("/api/v1/news", dto);
         return response.StatusCode;
     }
 
-    public async Task<HttpResponseMessage> DeleteNewsRawAsync(Guid id)
+    public async Task<HttpStatusCode> ChangeNewsProgramAsync(ChangeNewsProgramDto dto)
     {
-        return await _client.DeleteAsync($"/api/v1/news/{id}");
+        var response = await _client.PatchAsJsonAsync("/api/v1/news/change-program", dto);
+        return response.StatusCode;
     }
 
     public async Task<HttpStatusCode> DeleteNewsAsync(Guid id)
     {
-        var response = await DeleteNewsRawAsync(id);
+        var response = await _client.DeleteAsync($"/api/v1/news/{id}");
         return response.StatusCode;
     }
 
     public async Task<(HttpStatusCode Status, NewsBody? Body)> GetNewsBodyAsync(Guid bodyId)
     {
         var response = await _client.GetAsync($"/api/v1/news/body/{bodyId}");
-        if (response.IsSuccessStatusCode)
-        {
-            var body = await response.Content.ReadFromJsonAsync<NewsBody>();
-            return (response.StatusCode, body);
-        }
-        return (response.StatusCode, null);
+        if (!response.IsSuccessStatusCode) 
+            return (response.StatusCode, null);
+        var body = await response.Content.ReadFromJsonAsync<NewsBody>();
+        return (response.StatusCode, body);
+    }
+
+    public async Task<(HttpStatusCode Status, NewsDto news)> GetNewsByIdAsync(Guid id)
+    {
+        var response = await _client.GetAsync($"/api/v1/news/{id}");
+        if (!response.IsSuccessStatusCode) 
+            return (response.StatusCode, null!);
+        var news = await response.Content.ReadFromJsonAsync<NewsDto>();
+        return (response.StatusCode, news!);
     }
 
     // ==================== Attachments ====================
