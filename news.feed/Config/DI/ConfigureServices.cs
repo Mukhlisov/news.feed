@@ -5,6 +5,7 @@ using news.feed.Config.EntityFramework;
 using news.feed.Config.Settings;
 using news.feed.Repository;
 using news.feed.Services.Auth;
+using news.feed.Services.Exceptions;
 using news.feed.Services.Hashing;
 using news.feed.Services.News;
 using news.feed.Services.Programs;
@@ -18,6 +19,8 @@ public static class ConfigureServices
         services.AddControllers();
         services.ConfigureDbSettings();
         services.ConfigureDependencies();
+
+        services.AddProblemDetails();
     }
 
     private static void ConfigureDependencies(this IServiceCollection services)
@@ -38,6 +41,8 @@ public static class ConfigureServices
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<ISessionManager, SessionManager>();
         services.AddScoped<AuthAttribute>();
+
+        services.AddExceptionHandler<GlobalExceptionHandler>();
     }
 
     private static void ConfigureDbSettings(this IServiceCollection services) =>

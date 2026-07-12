@@ -12,11 +12,11 @@ namespace news.feed.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class NewsController : ApiControllerBase<NewsController>
+public class NewsController : ControllerBase
 {
     private readonly INewsService _newsService;
 
-    public NewsController(INewsService newsService, ILogger<NewsController> logger) : base(logger)
+    public NewsController(INewsService newsService)
     {
         _newsService = newsService;
     }
@@ -27,15 +27,8 @@ public class NewsController : ApiControllerBase<NewsController>
         [FromQuery(Name = "skip"), ValueRangeCheck(0, Consts.MaxSkip)] int skip,
         [FromQuery(Name = "take"), ValueRangeCheck(0, Consts.DefaultNewsBatchSize)] int take)
     {
-        try
-        {
-            var news = await _newsService.BatchGetNewsAsync(skip, take).ConfigureAwait(false);
-            return Ok(news);
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        var news = await _newsService.BatchGetNewsAsync(skip, take).ConfigureAwait(false);
+        return Ok(news);
     }
 
     [EnableCors(nameof(Policies.GetNewsPolicy))]
@@ -45,46 +38,25 @@ public class NewsController : ApiControllerBase<NewsController>
         [FromQuery(Name = "skip"), ValueRangeCheck(0, Consts.MaxSkip)] int skip,
         [FromQuery(Name = "take"), ValueRangeCheck(0, Consts.DefaultNewsBatchSize)] int take)
     {
-        try
-        {
-            var news = await _newsService.BatchGetNewsFromSpecifiedProgramAsync(program, skip, take)
-                .ConfigureAwait(false);
-            return Ok(news);
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        var news = await _newsService.BatchGetNewsFromSpecifiedProgramAsync(program, skip, take)
+            .ConfigureAwait(false);
+        return Ok(news);
     }
 
     [EnableCors(nameof(Policies.GetNewsPolicy))]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<NewsDto>> GetNewsById(Guid id)
     {
-        try
-        {
-            var newsDto = await _newsService.GetNewsByIdAsync(id).ConfigureAwait(false);
-            return Ok(newsDto);
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        var newsDto = await _newsService.GetNewsByIdAsync(id).ConfigureAwait(false);
+        return Ok(newsDto);
     }
 
     [EnableCors(nameof(Policies.GetNewsPolicy))]
     [HttpGet("body/{id:guid}")]
     public async Task<ActionResult<NewsBody>> GetNewsBodyById(Guid id)
     {
-        try
-        {
-            var newsBody = await _newsService.GetNewsBodyByIdAsync(id).ConfigureAwait(false);
-            return Ok(newsBody);
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        var newsBody = await _newsService.GetNewsBodyByIdAsync(id).ConfigureAwait(false);
+        return Ok(newsBody);
     }
 
     [Auth]
@@ -92,15 +64,8 @@ public class NewsController : ApiControllerBase<NewsController>
     [HttpPost]
     public async Task<ActionResult> CreateNews([FromBody, ProgramValidation] CreateNewsDto createNewsDto)
     {
-        try
-        {
-            var creationResult = await _newsService.CreateNewsAsync(createNewsDto).ConfigureAwait(false);
-            return Created(creationResult.Uri, creationResult.Result);
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        var creationResult = await _newsService.CreateNewsAsync(createNewsDto).ConfigureAwait(false);
+        return Created(creationResult.Uri, creationResult.Result);
     }
 
     [Auth]
@@ -108,15 +73,8 @@ public class NewsController : ApiControllerBase<NewsController>
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteNews(Guid id)
     {
-        try
-        {
-            await _newsService.DeleteNewsAsync(id).ConfigureAwait(false);
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        await _newsService.DeleteNewsAsync(id).ConfigureAwait(false);
+        return NoContent();
     }
 
     [Auth]
@@ -124,15 +82,8 @@ public class NewsController : ApiControllerBase<NewsController>
     [HttpPatch]
     public async Task<ActionResult> UpdateNews([FromBody] UpdateNewsDto updateNewsDto)
     {
-        try
-        {
-            var updateResult = await _newsService.UpdateNewsAsync(updateNewsDto).ConfigureAwait(false);
-            return Created(updateResult.Uri, updateResult.Result);
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        var updateResult = await _newsService.UpdateNewsAsync(updateNewsDto).ConfigureAwait(false);
+        return Created(updateResult.Uri, updateResult.Result);
     }
 
     [Auth]
@@ -140,15 +91,8 @@ public class NewsController : ApiControllerBase<NewsController>
     [HttpPatch("change-program")]
     public async Task<ActionResult> ChangeProgram([ProgramValidation] ChangeNewsProgramDto changeNewsProgramDto)
     {
-        try
-        {
-            var changeResult = await _newsService.ChangeNewsProgramAsync(changeNewsProgramDto).ConfigureAwait(false);
-            return Created(changeResult.Uri, changeResult.Result);
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        var changeResult = await _newsService.ChangeNewsProgramAsync(changeNewsProgramDto).ConfigureAwait(false);
+        return Created(changeResult.Uri, changeResult.Result);
     }
     // TODO search by news title (fuzzy match)
 }

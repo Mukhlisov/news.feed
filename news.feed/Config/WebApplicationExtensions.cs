@@ -4,6 +4,7 @@ public static class WebApplicationExtensions
 {
     public static void ConfigureApplication(this WebApplication app)
     {
+        app.UseExceptionHandler(); 
         app.UseForwardedHeaders();
         app.UseRouting();
 

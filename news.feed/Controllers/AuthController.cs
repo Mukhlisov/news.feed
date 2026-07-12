@@ -11,16 +11,12 @@ namespace news.feed.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class AuthController : ApiControllerBase<AuthController>
+public class AuthController : ControllerBase
 {
     private readonly ISessionManager _sessionManager;
     private readonly IAuthenticationService _authenticationService;
 
-    public AuthController(
-        ISessionManager sessionManager,
-        IAuthenticationService authenticationService,
-        ILogger<AuthController> logger)
-        : base(logger)
+    public AuthController(ISessionManager sessionManager, IAuthenticationService authenticationService)
     {
         _sessionManager = sessionManager;
         _authenticationService = authenticationService;
@@ -31,16 +27,9 @@ public class AuthController : ApiControllerBase<AuthController>
     [HttpPost]
     public IActionResult Login([FromBody, LoginDtoValidation] LoginDto loginDto)
     {
-        try
-        {
-            _authenticationService.CheckIsAuthenticated(loginDto);
-            var sessionToken = _sessionManager.CreateSessionToken(loginDto.Login);
-            return Ok(new {XBabywalkToken = sessionToken});
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        _authenticationService.CheckIsAuthenticated(loginDto);
+        var sessionToken = _sessionManager.CreateSessionToken(loginDto.Login);
+        return Ok(new {XBabywalkToken = sessionToken});
     }
 
     [EnableCors(nameof(Policies.AdminPanelPolicy))]

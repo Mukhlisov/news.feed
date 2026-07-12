@@ -8,13 +8,10 @@ namespace news.feed.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class AttachmentsController : ApiControllerBase<AttachmentsController>
+public class AttachmentsController : ControllerBase
 {
     private readonly IAttachmentsRepository _attachmentsRepository;
-    public AttachmentsController(
-        IAttachmentsRepository attachmentsRepository, 
-        ILogger<AttachmentsController> logger) 
-        : base(logger)
+    public AttachmentsController(IAttachmentsRepository attachmentsRepository)
     {
         _attachmentsRepository = attachmentsRepository;
     }
@@ -24,14 +21,7 @@ public class AttachmentsController : ApiControllerBase<AttachmentsController>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAttachmentByIdAsync(Guid id)
     {
-        try
-        {
-            await _attachmentsRepository.DeleteAttachmentByIdAsync(id).ConfigureAwait(false);
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        await _attachmentsRepository.DeleteAttachmentByIdAsync(id).ConfigureAwait(false);
+        return NoContent();
     }
 }

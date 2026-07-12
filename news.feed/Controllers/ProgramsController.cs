@@ -7,11 +7,11 @@ namespace news.feed.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class ProgramsController : ApiControllerBase<ProgramsController>
+public class ProgramsController : ControllerBase
 {
     private readonly IProgramsService _programsService;
 
-    public ProgramsController(IProgramsService programsService, ILogger<ProgramsController> logger) : base(logger)
+    public ProgramsController(IProgramsService programsService)
     {
         _programsService = programsService;
     }
@@ -20,14 +20,7 @@ public class ProgramsController : ApiControllerBase<ProgramsController>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Program>>> GetAllPrograms()
     {
-        try
-        {
-            var programs = await _programsService.GetAllProgramsAsync().ConfigureAwait(false);
-            return Ok(programs);
-        }
-        catch (Exception ex)
-        {
-            return HandleHttpError(ex);
-        }
+        var programs = await _programsService.GetAllProgramsAsync().ConfigureAwait(false);
+        return Ok(programs);
     }
 }
