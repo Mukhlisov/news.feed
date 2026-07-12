@@ -43,10 +43,10 @@ public class NewsFeedApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         var dummyPasswordHash = BCrypt.Net.BCrypt.HashPassword("TestAdminPasswordForTestsOnly!");
         Environment.SetEnvironmentVariable("PASSWORD_HASH", dummyPasswordHash);
 
-        ApplyMigrations();
+        ApplyMigrationsAndFillData();
     }
 
-    private void ApplyMigrations()
+    private void ApplyMigrationsAndFillData()
     {
         var options = new DbContextOptionsBuilder<NewsFeedContext>()
             .UseNpgsql(ConnectionString)
@@ -54,6 +54,10 @@ public class NewsFeedApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
         using var context = new NewsFeedContext(options);
         context.Database.Migrate();
+        if (context.Programs.Any())
+            return;
+        context.Programs.AddRange(TestData.Programs);
+        context.SaveChanges();
     }
 
     public new async Task DisposeAsync()
