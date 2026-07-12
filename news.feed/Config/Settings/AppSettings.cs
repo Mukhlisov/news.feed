@@ -19,16 +19,4 @@ public class AppSettings
         public static readonly TimeSpan KeepAliveTimeout = 1.Minutes();
         public static readonly long MaxRequestBodySize = 5.Megabytes();
     }
-
-    public static class DataBase
-    {
-        public const int ProgramAliasLength = 25;
-
-        public static readonly models.Models.Program[] DefaultPrograms = new[]
-        {
-            new models.Models.Program { Alias = "patronage", Name = "Проект «Патронаж»" },
-            new models.Models.Program { Alias = "baby-walk", Name = "Движение BabyWalk Удмуртия" },
-            new models.Models.Program { Alias = "education", Name = "Просветительская деятельность в области реабилитации" },
-        };
-    }
 }

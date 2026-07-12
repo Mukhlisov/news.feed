@@ -13,7 +13,6 @@ public static class Application
             var builder = WebApplication.CreateBuilder();
             builder.ConfigureBuilder();
             var app = builder.Build();
-            app.FillProgramsTableIfNotExists();
             app.ConfigureApplication();
             app.Run();
         }

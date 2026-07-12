@@ -6,6 +6,8 @@ namespace news.feed.Config.EntityFramework;
 
 public class NewsFeedContext : DbContext
 {
+    private const int ProgramAliasLength = 25;
+
     public NewsFeedContext(DbContextOptions<NewsFeedContext> contextOptions) : base(contextOptions)
     {
     }
@@ -27,10 +29,10 @@ public class NewsFeedContext : DbContext
             entity.Property(news => news.Title)
                 .HasMaxLength(150)
                 .IsRequired();
-            entity.Property(news => news.BodyId) // Не стал делать FK, чтобы не подтягивать за собой тело новости
+            entity.Property(news => news.BodyId)
                 .IsRequired();
             entity.Property(news => news.Program)
-                .HasMaxLength(AppSettings.DataBase.ProgramAliasLength)
+                .HasMaxLength(ProgramAliasLength)
                 .IsRequired();
             entity.Property(news => news.CreationTime)
                 .IsRequired();
@@ -55,7 +57,7 @@ public class NewsFeedContext : DbContext
             entity.ToTable("news_program");
             entity.HasKey(program => program.Alias);
             entity.Property(program => program.Alias)
-                .HasMaxLength(AppSettings.DataBase.ProgramAliasLength)
+                .HasMaxLength(ProgramAliasLength)
                 .IsRequired();
             entity.HasIndex(program => program.Alias)
                 .IsUnique();
