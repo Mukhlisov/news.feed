@@ -26,7 +26,7 @@ public class AppSettings
 
         public static readonly models.Models.Program[] DefaultPrograms = new[]
         {
-            new models.Models.Program { Alias = "patronage", Name = "Проект «Патронаж»" },
+            new models.Models.Program { Alias = "patronage", Name = "Функциональная реабилитация" },
             new models.Models.Program { Alias = "baby-walk", Name = "Движение BabyWalk Удмуртия" },
             new models.Models.Program { Alias = "education", Name = "Просветительская деятельность в области реабилитации" },
         };
