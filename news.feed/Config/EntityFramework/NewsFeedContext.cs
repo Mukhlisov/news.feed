@@ -36,7 +36,13 @@ public class NewsFeedContext : DbContext
                 .IsRequired();
             entity.Property(news => news.UpdateTime)
                 .IsRequired();
-            entity.HasIndex(news => news.Program, "IX_news_Program");
+            entity.Property(news => news.IsEmbedded)
+                .HasDefaultValue(false)
+                .IsRequired();
+            // Покрывает и ленту программы, и выборку встроенных новостей: фильтр + сортировка прямо по индексу
+            entity.HasIndex(news => new { news.Program, news.IsEmbedded, news.CreationTime },
+                    "IX_news_Program_IsEmbedded_CreationTime")
+                .IsDescending(false, false, true);
             entity.HasIndex(news => news.CreationTime, "IX_news_CreationTime");
         });
         modelBuilder.Entity<NewsBody>(entity =>

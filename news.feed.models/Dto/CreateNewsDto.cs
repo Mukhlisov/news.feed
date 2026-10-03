@@ -10,4 +10,5 @@ public record CreateNewsDto(
     string? PreviewUrl,
     string Body, 
     string Program,
-    List<AttachmentsDto>? AttachmentUris = null);
+    List<AttachmentsDto>? AttachmentUris = null,
+    bool IsEmbedded = false);

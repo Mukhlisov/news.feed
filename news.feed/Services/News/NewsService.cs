@@ -22,6 +22,9 @@ public class NewsService : INewsService
 
     public async Task<CreationResult<models.Models.News>> CreateNewsAsync(CreateNewsDto createNewsDto)
     {
+        if (createNewsDto.IsEmbedded)
+            await EnsureEmbeddedLimitNotReachedAsync(createNewsDto.Program).ConfigureAwait(false);
+
         var news = await _newsRepository
             .CreateNewsAsync(NewsFactory.Create(createNewsDto, AppSettings.MainAuthorId))
             .ConfigureAwait(false);
@@ -40,6 +43,9 @@ public class NewsService : INewsService
     public async Task<CreationResult<models.Models.News>> UpdateNewsAsync(UpdateNewsDto updateNewsDto)
     {
         var news = await _newsRepository.GetNewsByIdAsync(updateNewsDto.Id).ConfigureAwait(false);
+        if (updateNewsDto.IsEmbedded == true && !news.IsEmbedded)
+            await EnsureEmbeddedLimitNotReachedAsync(news.Program).ConfigureAwait(false);
+
         var isNewsBodyUpdated = await _newsRepository.UpdateNewsBodyAsync(new NewsBody
         {
             Id = news.BodyId,
@@ -82,6 +88,12 @@ public class NewsService : INewsService
         return await _newsRepository.BatchGetNewsFromSpecifiedProgramAsync(program, skip, take).ConfigureAwait(false);
     }
 
+    public async Task<IEnumerable<NewsDto>> GetEmbeddedNewsAsync(string program)
+    {
+        var embedded = await _newsRepository.GetEmbeddedNewsAsync(program).ConfigureAwait(false);
+        return embedded.Select(item => MapToDto(item.News, item.Body));
+    }
+
     public async Task<NewsDto?> GetNewsByIdAsync(Guid id)
     {
         var news = await _newsRepository.GetNewsByIdAsync(id).ConfigureAwait(false);
@@ -107,6 +119,9 @@ public class NewsService : INewsService
         if (news.Program.Equals(changeNewsProgramDto.Program, StringComparison.InvariantCultureIgnoreCase))
             return new CreationResult<models.Models.News>(uri, news);
 
+        if (news.IsEmbedded)
+            await EnsureEmbeddedLimitNotReachedAsync(changeNewsProgramDto.Program).ConfigureAwait(false);
+
         news.Program = changeNewsProgramDto.Program;
         var isNewsUpdated = await _newsRepository.ChangeProgramAsync(news).ConfigureAwait(false);
         if (!isNewsUpdated)
@@ -119,7 +134,15 @@ public class NewsService : INewsService
     {
         if (attachmentsToSave?.Count > 0)
             await _attachmentsRepository.BatchCreateAttachmentsAsync(attachmentsToSave, bodyId)
-                .ConfigureAwait(true);
+                .ConfigureAwait(false);
+    }
+
+    private async Task EnsureEmbeddedLimitNotReachedAsync(string program)
+    {
+        var embeddedCount = await _newsRepository.CountEmbeddedNewsAsync(program).ConfigureAwait(false);
+        if (embeddedCount >= Consts.MaxEmbeddedNewsPerProgram)
+            throw new ValidationFailedException(
+                $"Program '{program}' already has the maximum of {Consts.MaxEmbeddedNewsPerProgram} embedded news");
     }
 
     private static NewsDto MapToDto(models.Models.News news, NewsBody body)
@@ -133,6 +156,7 @@ public class NewsService : INewsService
             CreationTime = news.CreationTime,
             UpdateTime = news.UpdateTime,
             AuthorId = news.AuthorId,
+            IsEmbedded = news.IsEmbedded,
             Body = body.Body,
             AttachmentsUris = body.Attachments.Select(a => a.AttachmentUrl).ToList()
         };

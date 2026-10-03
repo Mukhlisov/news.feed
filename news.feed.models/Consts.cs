@@ -5,4 +5,5 @@ public static class Consts
     public const int DefaultNewsBatchSize = 10;
     public const int MaxSkip = int.MaxValue;
     public const int MaxNewsTitleLength = 150;
+    public const int MaxEmbeddedNewsPerProgram = 5;
 }

@@ -7,4 +7,5 @@ public record NewsToSave(
     string Program,
     long CreationDate,
     long LastUpdateDate,
-    Guid CreatorId);
+    Guid CreatorId,
+    bool IsEmbedded);

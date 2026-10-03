@@ -9,6 +9,7 @@ public class NewsDto
     public long CreationTime { get; set; }
     public long UpdateTime { get; set; }
     public Guid AuthorId { get; set; }
+    public bool IsEmbedded { get; set; }
 
     public string Body { get; set; } = string.Empty;
     public List<string> AttachmentsUris { get; set; } = new();

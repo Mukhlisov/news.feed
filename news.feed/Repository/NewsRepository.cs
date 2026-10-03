@@ -33,7 +33,8 @@ public class NewsRepository : INewsRepository
                 BodyId = bodyId,
                 CreationTime = newsToSave.CreationDate,
                 UpdateTime = newsToSave.LastUpdateDate,
-                AuthorId = newsToSave.CreatorId
+                AuthorId = newsToSave.CreatorId,
+                IsEmbedded = newsToSave.IsEmbedded
             }).ConfigureAwait(false);
             await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
@@ -56,7 +57,8 @@ public class NewsRepository : INewsRepository
                 .ExecuteUpdateAsync(s => s
                     .SetProperty(n => n.Title, news.Title)
                     .SetProperty(n => n.PreviewUrl, news.PreviewUrl)
-                    .SetProperty(n => n.UpdateTime, news.UpdateTime))
+                    .SetProperty(n => n.UpdateTime, news.UpdateTime)
+                    .SetProperty(n => n.IsEmbedded, news.IsEmbedded))
                 .ConfigureAwait(false);
             await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
@@ -102,12 +104,39 @@ public class NewsRepository : INewsRepository
         int take = Consts.DefaultNewsBatchSize)
     {
         return await _newsFeedContext.News
-            .Where(news => news.Program.Equals(program))
+            .Where(news => news.Program.Equals(program) && !news.IsEmbedded)
             .OrderByDescending(news => news.CreationTime)
             .Skip(skip)
             .Take(take)
             .ToListAsync().ConfigureAwait(false);
     }
+
+    public async Task<IReadOnlyList<(News News, NewsBody Body)>> GetEmbeddedNewsAsync(
+        string program,
+        int take = Consts.MaxEmbeddedNewsPerProgram)
+    {
+        var news = await _newsFeedContext.News
+            .Where(n => n.Program.Equals(program) && n.IsEmbedded)
+            .OrderByDescending(n => n.CreationTime)
+            .Take(take)
+            .ToListAsync().ConfigureAwait(false);
+        if (news.Count == 0)
+            return [];
+
+        var bodyIds = news.Select(n => n.BodyId).ToList();
+        var bodies = await _newsFeedContext.NewsBodies
+            .Include(body => body.Attachments)
+            .Where(body => bodyIds.Contains(body.Id))
+            .ToDictionaryAsync(body => body.Id).ConfigureAwait(false);
+
+        return news
+            .Where(n => bodies.ContainsKey(n.BodyId))
+            .Select(n => (n, bodies[n.BodyId]))
+            .ToList();
+    }
+
+    public Task<int> CountEmbeddedNewsAsync(string program) =>
+        _newsFeedContext.News.CountAsync(news => news.Program.Equals(program) && news.IsEmbedded);
 
     public async Task<News> GetNewsByIdAsync(Guid id)
     {

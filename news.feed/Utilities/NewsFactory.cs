@@ -14,7 +14,8 @@ public static class NewsFactory
             createNewsDto.Program,
             DateTime.UtcNow.Ticks,
             DateTime.UtcNow.Ticks,
-            creatorId);
+            creatorId,
+            createNewsDto.IsEmbedded);
     }
 
     public static News Create(News oldNews, UpdateNewsDto updateNewsDto)
@@ -28,7 +29,8 @@ public static class NewsFactory
             BodyId = oldNews.BodyId,
             CreationTime = oldNews.CreationTime,
             UpdateTime = DateTime.UtcNow.Ticks,
-            AuthorId = oldNews.AuthorId
+            AuthorId = oldNews.AuthorId,
+            IsEmbedded = updateNewsDto.IsEmbedded ?? oldNews.IsEmbedded
         };
     }
 }

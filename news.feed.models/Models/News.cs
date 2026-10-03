@@ -10,4 +10,5 @@ public class News
     public long CreationTime { get; set; }
     public long UpdateTime { get; set; }
     public Guid AuthorId { get; set; }
+    public bool IsEmbedded { get; set; }
 }

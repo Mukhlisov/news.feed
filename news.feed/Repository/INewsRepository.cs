@@ -11,6 +11,8 @@ public interface INewsRepository
     Task<bool> UpdateNewsBodyAsync(NewsBody newsBody);
     Task<IEnumerable<News>> BatchGetNewsAsync(int skip = 0, int take = Consts.DefaultNewsBatchSize);
     Task<IEnumerable<News>> BatchGetNewsFromSpecifiedProgramAsync(string program, int skip = 0, int take = Consts.DefaultNewsBatchSize);
+    Task<IReadOnlyList<(News News, NewsBody Body)>> GetEmbeddedNewsAsync(string program, int take = Consts.MaxEmbeddedNewsPerProgram);
+    Task<int> CountEmbeddedNewsAsync(string program);
     Task<News> GetNewsByIdAsync(Guid id);
     Task<NewsBody> GetNewsBodyByIdAsync(Guid id);
     Task DeleteNewsAsync(Guid id);

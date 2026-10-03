@@ -58,6 +58,22 @@ public class NewsController : ApiControllerBase<NewsController>
     }
 
     [EnableCors(nameof(Policies.GetNewsPolicy))]
+    [HttpGet("{program}/embedded")]
+    public async Task<ActionResult<IEnumerable<NewsDto>>> GetEmbeddedNewsFromSpecifiedProgram(
+        [FromRoute(Name = "program"), ProgramValidation] string program)
+    {
+        try
+        {
+            var news = await _newsService.GetEmbeddedNewsAsync(program).ConfigureAwait(false);
+            return Ok(news);
+        }
+        catch (Exception ex)
+        {
+            return HandleHttpError(ex);
+        }
+    }
+
+    [EnableCors(nameof(Policies.GetNewsPolicy))]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<NewsDto>> GetNewsById(Guid id)
     {

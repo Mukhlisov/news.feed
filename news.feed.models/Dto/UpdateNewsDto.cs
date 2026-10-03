@@ -10,4 +10,6 @@ public record UpdateNewsDto(
     string Title, 
     string? PreviewUrl,
     string Body,
-    List<AttachmentsDto>? Attachments = null);
+    List<AttachmentsDto>? Attachments = null,
+    // null - флаг не меняется
+    bool? IsEmbedded = null);

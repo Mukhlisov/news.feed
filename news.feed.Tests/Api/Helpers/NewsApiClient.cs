@@ -67,6 +67,29 @@ public class NewsApiClient
         return (response.StatusCode, news!);
     }
 
+    public async Task<List<News>> GetNewsAsync(int skip = 0, int take = 10)
+    {
+        var response = await _client.GetAsync($"/api/v1/news?skip={skip}&take={take}");
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<News>>())!;
+    }
+
+    public async Task<List<News>> GetProgramNewsAsync(string program, int skip = 0, int take = 10)
+    {
+        var response = await _client.GetAsync($"/api/v1/news/{program}?skip={skip}&take={take}");
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<News>>())!;
+    }
+
+    public async Task<(HttpStatusCode Status, List<NewsDto>? News)> GetEmbeddedNewsAsync(string program)
+    {
+        var response = await _client.GetAsync($"/api/v1/news/{program}/embedded");
+        if (!response.IsSuccessStatusCode)
+            return (response.StatusCode, null);
+        var news = await response.Content.ReadFromJsonAsync<List<NewsDto>>();
+        return (response.StatusCode, news);
+    }
+
     // ==================== Attachments ====================
 
     public async Task<HttpStatusCode> DeleteAttachmentAsync(Guid attachmentId)
