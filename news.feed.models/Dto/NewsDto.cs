@@ -6,6 +6,7 @@ public class NewsDto
     public string Program { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string PreviewUrl { get; set; } = string.Empty;
+    public Guid BodyId { get; set; }
     public long CreationTime { get; set; }
     public long UpdateTime { get; set; }
     public Guid AuthorId { get; set; }

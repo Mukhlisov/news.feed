@@ -55,6 +55,7 @@ public class EmbeddedNewsTests : IAsyncLifetime
         embeddedNews.Should().ContainSingle();
         embeddedNews![0].Id.Should().Be(embedded!.Id);
         embeddedNews[0].IsEmbedded.Should().BeTrue();
+        embeddedNews[0].BodyId.Should().Be(embedded.BodyId);
         embeddedNews[0].Body.Should().Be("Embedded body");
         embeddedNews[0].AttachmentsUris.Should().ContainSingle();
     }

@@ -153,6 +153,7 @@ public class NewsService : INewsService
             Program = news.Program,
             Title = news.Title,
             PreviewUrl = news.PreviewUrl,
+            BodyId = news.BodyId,
             CreationTime = news.CreationTime,
             UpdateTime = news.UpdateTime,
             AuthorId = news.AuthorId,
