@@ -91,4 +91,21 @@ public class NewsUpdateTests : IAsyncLifetime
         var (_, updated) = await _client.GetNewsByIdAsync(created.Id);
         updated.Program.Should().Be("baby-walk");
     }
+
+    [Fact]
+    public async Task UpdateNews_NewAttachmentsAreAppendedAfterExistingOnes()
+    {
+        var oldUris = Enumerable.Range(0, 5).Select(i => $"https://cdn.example.com/old-{i}.jpg").ToList();
+        var newUris = Enumerable.Range(0, 5).Select(i => $"https://cdn.example.com/new-{i}.jpg").ToList();
+        var createDto = new CreateNewsDto("Title", "", "Body", "patronage",
+            oldUris.Select(u => new AttachmentsDto(null, u)).ToList());
+        var (_, created) = await _client.CreateNewsAsync(createDto);
+
+        var status = await _client.UpdateNewsAsync(new UpdateNewsDto(
+            created!.Id, "Title", "", "Body", newUris.Select(u => new AttachmentsDto(null, u)).ToList()));
+        status.Should().Be(HttpStatusCode.Created);
+
+        var (_, result) = await _client.GetNewsByIdAsync(created.Id);
+        result.AttachmentsUris.Should().Equal(oldUris.Concat(newUris));
+    }
 }

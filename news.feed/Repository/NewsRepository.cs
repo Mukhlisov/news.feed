@@ -125,7 +125,7 @@ public class NewsRepository : INewsRepository
 
         var bodyIds = news.Select(n => n.BodyId).ToList();
         var bodies = await _newsFeedContext.NewsBodies
-            .Include(body => body.Attachments)
+            .Include(body => body.Attachments.OrderBy(a => a.Position))
             .Where(body => bodyIds.Contains(body.Id))
             .ToDictionaryAsync(body => body.Id).ConfigureAwait(false);
 
@@ -147,7 +147,7 @@ public class NewsRepository : INewsRepository
     public async Task<NewsBody> GetNewsBodyByIdAsync(Guid id)
     {
         var newsBody = await _newsFeedContext.NewsBodies
-            .Include(body => body.Attachments)
+            .Include(body => body.Attachments.OrderBy(a => a.Position))
             .FirstOrDefaultAsync(body => body.Id == id)
             .ConfigureAwait(false);
         return newsBody ?? throw new DataNotFoundException($"News body with id {id} not found");

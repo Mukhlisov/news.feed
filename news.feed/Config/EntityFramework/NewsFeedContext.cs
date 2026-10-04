@@ -77,7 +77,7 @@ public class NewsFeedContext : DbContext
         {
             entity.ToTable("news_attachment");
             entity.HasKey(attachment => attachment.Id);
-            entity.HasIndex(news => news.NewsBodyId, "IX_attachments_NewsBodyId");
+            entity.HasIndex(attachment => new { attachment.NewsBodyId, attachment.Position }, "IX_attachments_NewsBodyId");
         });
     }
 }

@@ -159,7 +159,7 @@ public class NewsService : INewsService
             AuthorId = news.AuthorId,
             IsEmbedded = news.IsEmbedded,
             Body = body.Body,
-            AttachmentsUris = body.Attachments.Select(a => a.AttachmentUrl).ToList()
+            AttachmentsUris = body.Attachments.OrderBy(a => a.Position).Select(a => a.AttachmentUrl).ToList()
         };
     }
 }

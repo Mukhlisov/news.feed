@@ -126,4 +126,22 @@ public class NewsCreationTests : IAsyncLifetime
 
         status.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task CreateNews_WithManyAttachments_PreservesAttachmentsOrder()
+    {
+        var uris = Enumerable.Range(0, 12).Select(i => $"https://cdn.example.com/page-{i}.jpg").ToList();
+        var dto = new CreateNewsDto(
+            Title: "Ordered attachments",
+            PreviewUrl: "",
+            Body: "Body",
+            Program: "patronage",
+            AttachmentUris: uris.Select(u => new AttachmentsDto(null, u)).ToList());
+
+        var (_, news) = await _client.CreateNewsAsync(dto);
+
+        var (status, result) = await _client.GetNewsByIdAsync(news!.Id);
+        status.Should().Be(HttpStatusCode.OK);
+        result.AttachmentsUris.Should().Equal(uris);
+    }
 }

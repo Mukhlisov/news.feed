@@ -18,8 +18,16 @@ public class AttachmentsRepository : IAttachmentsRepository
     {
         try
         {
-            await _newsFeedContext.Attachments.AddRangeAsync(attachmentUris.Select(uri =>
-                new Attachment{ Id = Guid.NewGuid(), AttachmentUrl = uri, NewsBodyId = newsBodyId}))
+            var maxPosition = await _newsFeedContext.Attachments
+                .Where(a => a.NewsBodyId == newsBodyId)
+                .MaxAsync(a => (int?) a.Position)
+                .ConfigureAwait(false) ?? -1;
+            var firstPosition = maxPosition + 1;
+            await _newsFeedContext.Attachments.AddRangeAsync(attachmentUris.Select((uri, index) =>
+                new Attachment
+                {
+                    Id = Guid.NewGuid(), AttachmentUrl = uri, NewsBodyId = newsBodyId, Position = firstPosition + index
+                }))
                 .ConfigureAwait(false);
             await _newsFeedContext.SaveChangesAsync().ConfigureAwait(false);
         }
